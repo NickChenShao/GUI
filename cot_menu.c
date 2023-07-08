@@ -53,8 +53,11 @@ typedef struct MenuCtrl
 typedef struct
 {
     MenuCtrl_t        *pMenuCtrl;           /*!< 当前菜单控制处理 */
-    MenuCallFun_f      pfnLoadCallFun;
+    MenuCallFun_f      pfnMainEnterCallFun; /*!< 主菜单进入时(进入菜单)需要执行一次的函数 */
+    MenuCallFun_f      pfnMainExitCallFun;  /*!< 主菜单进入后退出时(退出菜单)需要执行一次的函数 */
+    MenuCallFun_f      pfnLoadCallFun;      /*!< 重加载函数 */
     bool               isEnglish;           /*!< 是否使能英文 */
+    uint8_t            isEnterMainMenu : 1; /*!< 是否进入了主菜单 */
 }MenuManage_t;
 
 /* Private define ----------------------------------------------------------------------------------------------------*/
@@ -168,22 +171,20 @@ int cotMenu_Init(MainMenuCfg_t *pMainMenu)
     pNewMenuCtrl->showBaseItem = 0;
 
     sg_tMenuManage.pMenuCtrl = pNewMenuCtrl;
-    
+    sg_tMenuManage.isEnterMainMenu = 0;
+    sg_tMenuManage.pfnMainEnterCallFun = pMainMenu->pfnEnterCallFun;
+    sg_tMenuManage.pfnMainExitCallFun = pMainMenu->pfnExitCallFun;
     sg_tMenuManage.pfnLoadCallFun = pNewMenuCtrl->pfnLoadCallFun;
 
-    if (pMainMenu->pfnEnterCallFun != NULL)
-    {
-        pMainMenu->pfnEnterCallFun();
-    }
-    
     return 0;
 }
 
 /**
- * @brief  菜单反初始化
- * 
- * @return 0,成功; -1,失败  
- */
+  * @brief  菜单反初始化
+  * 
+  * @attention  不管处于任何界面都会逐级退出到主菜单后（会调用退出函数），再退出主菜单，最后反初始化
+  * @return 0,成功; -1,失败  
+  */
 int cotMenu_DeInit(void)
 {
     if (sg_tMenuManage.pMenuCtrl == NULL)
@@ -191,11 +192,15 @@ int cotMenu_DeInit(void)
         return -1;
     }
 
-    while (cotMenu_Exit(1) == 0){}
+    cotMenu_MainExit();
 
     DeleteMenu(sg_tMenuManage.pMenuCtrl);
     sg_tMenuManage.pMenuCtrl = NULL;
     sg_tMenuManage.isEnglish = false;
+    sg_tMenuManage.isEnterMainMenu = 0;
+    sg_tMenuManage.pfnMainEnterCallFun = NULL;
+    sg_tMenuManage.pfnMainExitCallFun = NULL;
+    sg_tMenuManage.pfnLoadCallFun = NULL;
 
     return 0;
 }
@@ -261,7 +266,7 @@ int cotMenu_EnableEnglish(bool isEnable)
   */
 int cotMenu_Reset(void)
 {
-    if (sg_tMenuManage.pMenuCtrl == NULL)
+    if (sg_tMenuManage.pMenuCtrl == NULL || sg_tMenuManage.isEnterMainMenu == 0)
     {
         return -1;
     }
@@ -286,12 +291,60 @@ int cotMenu_Reset(void)
   */
 bool cotMenu_IsRun(void)
 {
-    if (sg_tMenuManage.pMenuCtrl == NULL)
+    if (sg_tMenuManage.pMenuCtrl == NULL || sg_tMenuManage.isEnterMainMenu == 0)
     {
         return false;
     }
 
     return true;
+}
+
+/**
+  * @brief      主菜单进入
+  * 
+  * @return     0,成功; -1,失败  
+  */
+int cotMenu_MainEnter(void)
+{
+    if (sg_tMenuManage.pMenuCtrl == NULL || sg_tMenuManage.isEnterMainMenu == 1)
+    {
+        return -1;
+    }
+
+    if (sg_tMenuManage.pfnMainEnterCallFun != NULL)
+    {
+        sg_tMenuManage.pfnMainEnterCallFun();
+    }
+
+    sg_tMenuManage.isEnterMainMenu = 1;
+    sg_tMenuManage.pfnLoadCallFun = sg_tMenuManage.pMenuCtrl->pfnLoadCallFun;
+
+    return 0;
+}
+
+/**
+  * @brief      主菜单退出
+  * 
+  * @attention  不管处于任何界面都会逐级退出到主菜单后（会调用退出函数），再退出主菜单
+  * @return     0,成功; -1,失败  
+  */
+int cotMenu_MainExit(void)
+{
+    if (sg_tMenuManage.pMenuCtrl == NULL || sg_tMenuManage.isEnterMainMenu == 0)
+    {
+        return -1;
+    }
+
+    while (cotMenu_Exit(1) == 0){}
+
+    if (sg_tMenuManage.pfnMainExitCallFun != NULL)
+    {
+        sg_tMenuManage.pfnMainExitCallFun();
+    }
+
+    sg_tMenuManage.isEnterMainMenu = 0;
+
+    return 0;
 }
 
 /**
@@ -304,7 +357,7 @@ int cotMenu_Enter(void)
     MenuCtrl_t *pNewMenuCtrl = NULL;
     MenuCtrl_t *pCurrMenuCtrl = sg_tMenuManage.pMenuCtrl;
 
-    if (sg_tMenuManage.pMenuCtrl == NULL)
+    if (sg_tMenuManage.pMenuCtrl == NULL || sg_tMenuManage.isEnterMainMenu == 0)
     {
         return -1;
     }
@@ -346,7 +399,7 @@ int cotMenu_Exit(bool isReset)
 {
     MenuCtrl_t *pMenuCtrl = sg_tMenuManage.pMenuCtrl;
 
-    if (sg_tMenuManage.pMenuCtrl == NULL)
+    if (sg_tMenuManage.pMenuCtrl == NULL || sg_tMenuManage.isEnterMainMenu == 0)
     {
         return -1;
     }
@@ -383,7 +436,7 @@ int cotMenu_Exit(bool isReset)
   */
 int cotMenu_SelectPrevious(bool isAllowRoll)
 {
-    if (sg_tMenuManage.pMenuCtrl == NULL)
+    if (sg_tMenuManage.pMenuCtrl == NULL || sg_tMenuManage.isEnterMainMenu == 0)
     {
         return -1;
     }
@@ -416,7 +469,7 @@ int cotMenu_SelectPrevious(bool isAllowRoll)
   */
 int cotMenu_SelectNext(bool isAllowRoll)
 {
-    if (sg_tMenuManage.pMenuCtrl == NULL)
+    if (sg_tMenuManage.pMenuCtrl == NULL || sg_tMenuManage.isEnterMainMenu == 0)
     {
         return -1;
     }
@@ -457,7 +510,7 @@ int cotMenu_ShortcutEnter(bool isAbsolute, uint8_t deep, ...)
     va_list pItemList;
     menusize_t selectItem;
 
-    if (sg_tMenuManage.pMenuCtrl == NULL)
+    if (sg_tMenuManage.pMenuCtrl == NULL || sg_tMenuManage.isEnterMainMenu == 0)
     {
         return -1;
     }
@@ -541,7 +594,7 @@ int cotMenu_QueryParentMenu(MenuShow_t *ptMenuShow, uint8_t level)
     MenuList_t *pMenu;
     MenuCtrl_t *pMenuCtrl = NULL;
 
-    if (sg_tMenuManage.pMenuCtrl == NULL)
+    if (sg_tMenuManage.pMenuCtrl == NULL || sg_tMenuManage.isEnterMainMenu == 0)
     {
         return -1;
     }
@@ -599,7 +652,7 @@ int cotMenu_Task(void)
     MenuList_t *pMenuList;
     MenuShow_t tMenuShow;
 
-    if (sg_tMenuManage.pMenuCtrl == NULL)
+    if (sg_tMenuManage.pMenuCtrl == NULL || sg_tMenuManage.isEnterMainMenu == 0)
     {
         return -1;
     }

@@ -140,6 +140,9 @@ extern bool cotMenu_IsEnglish(void);
 
 /* 菜单操作 */
 
+extern int cotMenu_MainEnter(void);
+extern int cotMenu_MainExit(void);
+
 extern int cotMenu_Reset(void);
 extern int cotMenu_Enter(void);
 extern int cotMenu_Exit(bool isReset);
