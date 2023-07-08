@@ -5,8 +5,9 @@
 
 extern const MenuImage_t sgc_SettingImage;
 
-void Hmi_SetLoad(void);
+void Hmi_SetEnter(void);
 void Hmi_SetExit(void);
+void Hmi_SetLoad(void);
 void Hmi_SetTask(void);
 
 #endif

@@ -15,17 +15,17 @@ static void OnBluetoothFunction(void);
 static void OnBatteryFunction(void);
 static void OnStorageFunction(void);
 
-/* è®¾ç½®èœå• */
+/* ÉèÖÃ²Ëµ¥ */
 MenuList_t sg_SetMenuTable[] = 
 {
-    {"è¯­è¨€", "Language",   NULL, NULL, OnLanguageFunction, NULL},
-    {"è“ç‰™", "Bluetooth",  NULL, NULL, OnBluetoothFunction, NULL},
-    {"ç”µæ± ", "Battery",    NULL, NULL, OnBatteryFunction, NULL},
-    {"å‚¨å­˜", "Store",      NULL, NULL, OnStorageFunction, NULL},
-    {"æ›´å¤š", "More",       Hmi_MoreSetLoad, Hmi_MoreSetExit, Hmi_MoreSetTask, NULL},
+    {{"ÓïÑÔ", "Language"},   NULL, NULL, NULL, OnLanguageFunction, NULL},
+    {{"À¶ÑÀ", "Bluetooth"},  NULL, NULL, NULL, OnBluetoothFunction, NULL},
+    {{"µç³Ø", "Battery"},    NULL, NULL, NULL, OnBatteryFunction, NULL},
+    {{"´¢´æ", "Store"},      NULL, NULL, NULL, OnStorageFunction, NULL},
+    {{"¸ü¶à", "More"},       Hmi_MoreSetEnter, Hmi_MoreSetExit, Hmi_MoreSetLoad, Hmi_MoreSetTask, NULL},
 };
 
-/* è®¾ç½®èœå•æ˜¾ç¤ºæ•ˆæœ */
+/* ÉèÖÃ²Ëµ¥ÏÔÊ¾Ğ§¹û */
 static void ShowSetMenu(MenuShow_t *ptShowInfo)
 {
     uint8_t showNum = 3;
@@ -50,9 +50,14 @@ static void ShowSetMenu(MenuShow_t *ptShowInfo)
     }
 }
 
-void Hmi_SetLoad(void)
+void Hmi_SetEnter(void)
 {
     cotMenu_Bind(sg_SetMenuTable, GET_MENU_NUM(sg_SetMenuTable), ShowSetMenu);
+}
+
+void Hmi_SetLoad(void)
+{
+    
 }
 
 void Hmi_SetExit(void)
@@ -64,8 +69,8 @@ void Hmi_SetTask(void)
 {
     int cmd;
 
-    printf("é€‰æ‹©æ“ä½œ(0-è¿”å›; 1-è¿”å›ä¸»èœå•; 2-è¿›å…¥; 3-ä¸‹ä¸€ä¸ª; 4-ä¸Šä¸€ä¸ª): ");
-    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
+    printf("Ñ¡Ôñ²Ù×÷(0-·µ»Ø; 1-·µ»ØÖ÷²Ëµ¥; 2-½øÈë; 3-ÏÂÒ»¸ö; 4-ÉÏÒ»¸ö): ");
+    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
  
     switch (cmd)
     {
@@ -96,22 +101,22 @@ static void OnLanguageFunction(void)
     int cmd;
 
     printf("--------------------------\n");
-    printf("     è¯­è¨€åŠŸèƒ½æµ‹è¯•ç•Œé¢\n");
+    printf("     ÓïÑÔ¹¦ÄÜ²âÊÔ½çÃæ\n");
     printf("--------------------------\n");
     
-    printf("é€‰æ‹©æ“ä½œ(0-ä¸­æ–‡; 1-English): ");
-    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
+    printf("Ñ¡Ôñ²Ù×÷(0-ÖĞÎÄ; 1-English): ");
+    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
 
     if (cmd == 0)
     {
-        cotMenu_EnableEnglish(false);
+        cotMenu_SelectLanguage(0);
     }
     else
     {
-        cotMenu_EnableEnglish(true);
+        cotMenu_SelectLanguage(1);
     }
 
-    cotMenu_Exit(0); // åˆ‡æ¢åè‡ªåŠ¨é€€å‡º
+    cotMenu_Exit(0); // ÇĞ»»ºó×Ô¶¯ÍË³ö
 }
 
 static void OnBluetoothFunction(void)
@@ -119,11 +124,11 @@ static void OnBluetoothFunction(void)
     int cmd;
 
     printf("--------------------------\n");
-    printf("     è“ç‰™åŠŸèƒ½æµ‹è¯•ç•Œé¢\n");
+    printf("     À¶ÑÀ¹¦ÄÜ²âÊÔ½çÃæ\n");
     printf("--------------------------\n");
 
-    printf("é€‰æ‹©æ“ä½œ(0-é€€å‡º): ");
-    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
+    printf("Ñ¡Ôñ²Ù×÷(0-ÍË³ö): ");
+    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
 
     if (cmd == 0)
     {
@@ -136,11 +141,11 @@ static void OnBatteryFunction(void)
     int cmd;
 
     printf("--------------------------\n");
-    printf("     ç”µæ± åŠŸèƒ½æµ‹è¯•ç•Œé¢\n");
+    printf("     µç³Ø¹¦ÄÜ²âÊÔ½çÃæ\n");
     printf("--------------------------\n");
 
-    printf("é€‰æ‹©æ“ä½œ(0-é€€å‡º): ");
-    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
+    printf("Ñ¡Ôñ²Ù×÷(0-ÍË³ö): ");
+    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
 
     if (cmd == 0)
     {
@@ -153,11 +158,11 @@ static void OnStorageFunction(void)
     int cmd;
 
     printf("--------------------------\n");
-    printf("     å‚¨å­˜åŠŸèƒ½æµ‹è¯•ç•Œé¢\n");
+    printf("     ´¢´æ¹¦ÄÜ²âÊÔ½çÃæ\n");
     printf("--------------------------\n");
 
-    printf("é€‰æ‹©æ“ä½œ(0-é€€å‡º): ");
-    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
+    printf("Ñ¡Ôñ²Ù×÷(0-ÍË³ö): ");
+    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
 
     if (cmd == 0)
     {

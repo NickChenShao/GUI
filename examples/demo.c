@@ -1,5 +1,5 @@
 
-/* èœå•æ˜¾ç¤ºæ•ˆæœå›¾å¯çœ‹: 
+/* ²Ëµ¥ÏÔÊ¾Ğ§¹ûÍ¼¿É¿´: 
 
 https://blog.csdn.net/qq_24130227/article/details/121167276 
 
@@ -10,44 +10,54 @@ https://blog.csdn.net/qq_24130227/article/details/121167276
 #include <stdio.h>
 #include <string.h>
 
+int isEnterMenu = 0;
+
+void EnterMainMenu(void)
+{
+    isEnterMenu = 1;
+}
+
+void ExitMainMenu(void)
+{
+    isEnterMenu = 0;
+}
+
 int main(int argc, char **argv)
 {
-    int ret, cmd = 0;
+    int cmd = 0;
     int8_t musicMenuId, languageMenuId, moreSetMenuId;
-    MainMenuCfg_t tMainMenu;
     
-    tMainMenu.pszDesc = "ä¸»èœå•";
-    tMainMenu.pszEnDesc = "Main Menu";
-    tMainMenu.pfnLoadCallFun = Hmi_LoadMainHmi;
-    tMainMenu.pfnRunCallFun = Hmi_MainTask;
+    MainMenuCfg_t tMainMenu = {{"Ö÷²Ëµ¥", "Main Menu"}, EnterMainMenu, ExitMainMenu, Hmi_LoadMainHmi, Hmi_MainTask};
 
-    // cotMenu_Init(&tMainMenu);
+    cotMenu_Init(&tMainMenu);
     
     while (1)
     {
         CLEAR();
         MOVETO(0, 0);
 
-        if (!cotMenu_IsRun())
+        if (!isEnterMenu)
         {
-            printf("é€‰æ‹©æ“ä½œ(0-è¿›å…¥ä¸»èœå•; 1-é€€å‡º): ");
-            scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
+            printf("Ñ¡Ôñ²Ù×÷(0-½øÈëÖ÷²Ëµ¥; 1-ÍË³ö): ");
+            scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
 
             if (cmd == 0)
             {
-                cotMenu_Init(&tMainMenu);
+                cotMenu_MainEnter();
 
                 CLEAR();
                 MOVETO(0, 0);
             }
             else if (cmd == 1)
             {
-                return 0;
+                break;
             }
         }
 
         cotMenu_Task();
     }
+
+    cotMenu_DeInit();
 
     return 0;
 }

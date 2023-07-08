@@ -10,21 +10,21 @@
 
 
 
-/* ä¸»èœå• */
+/* Ö÷²Ëµ¥ */
 MenuList_t sg_MainMenuTable[] = 
 {
-    {"  éŸ³ä¹  ", "  Music ",  Hmi_MusicLoad, Hmi_MusicExit, Hmi_MusicTask, (MenuImage_t *)&sgc_MusicImage},
+    {{"  ÒôÀÖ  ", "  Music "},  Hmi_MusicEnter, Hmi_MusicExit, Hmi_MusicLoad, Hmi_MusicTask, (MenuImage_t *)&sgc_MusicImage},
     
-    {"  è§†é¢‘  ", "  Video ",  Hmi_VideoLoad, Hmi_VideoExit, Hmi_VideoTask, (MenuImage_t *)&sgc_VideoImage},
+    {{"  ÊÓÆµ  ", "  Video "},  NULL, Hmi_VideoExit, Hmi_VideoLoad, Hmi_VideoTask, (MenuImage_t *)&sgc_VideoImage},
     
-    {" æ‘„åƒæœº ", " Camera ",  Hmi_CameraLoad, Hmi_CameraExit, Hmi_CameraTask, (MenuImage_t *)&sgc_CameraImage},
+    {{" ÉãÏñ»ú ", " Camera "},  Hmi_CameraEnter, Hmi_CameraExit, Hmi_CameraLoad, Hmi_CameraTask, (MenuImage_t *)&sgc_CameraImage},
     
-    {"  è®¾ç½®  ", " Setting",  Hmi_SetLoad,   Hmi_SetExit,   Hmi_SetTask, (MenuImage_t *)&sgc_SettingImage},
+    {{"  ÉèÖÃ  ", " Setting"},  Hmi_SetEnter, Hmi_SetExit, Hmi_SetLoad,   Hmi_SetTask, (MenuImage_t *)&sgc_SettingImage},
 };
 
 
 
-/* ä¸»èœå•æ˜¾ç¤ºæ•ˆæœ */
+/* Ö÷²Ëµ¥ÏÔÊ¾Ğ§¹û */
 static void ShowMainMenu(MenuShow_t *ptShowInfo)
 {
     uint8_t showNum = 3;
@@ -96,13 +96,13 @@ void Hmi_MainTask(void)
 {
     int cmd;
 
-    printf("é€‰æ‹©æ“ä½œ(0-é€€å‡ºä¸»èœå•; 2-è¿›å…¥; 3-ä¸‹ä¸€ä¸ª; 4-ä¸Šä¸€ä¸ª; 5-å¿«æ·éŸ³ä¹; 6-å¿«æ·è¯­è¨€; 7-å¿«æ·æ›´å¤šè®¾ç½®): ");
-    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
+    printf("Ñ¡Ôñ²Ù×÷(0-ÍË³öÖ÷²Ëµ¥; 2-½øÈë; 3-ÏÂÒ»¸ö; 4-ÉÏÒ»¸ö; 5-¿ì½İÒôÀÖ; 6-¿ì½İÓïÑÔ; 7-¿ì½İ¸ü¶àÉèÖÃ): ");
+    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
  
     switch (cmd)
     {
     case 0:
-        cotMenu_DeInit();
+        cotMenu_MainExit();
         break;
     case 1:
         cotMenu_Reset();
@@ -117,17 +117,17 @@ void Hmi_MainTask(void)
         cotMenu_SelectPrevious(true);
         break;
 
-    // case 5:
-    //     cotMenu_EnterShortcutMenu(musicMenuId);
-    //     break;
+    case 5:
+        cotMenu_ShortcutEnter(true, 1, 0);
+        break;
 
-    // case 6:
-    //     cotMenu_EnterShortcutMenu(languageMenuId);
-    //     break;
+    case 6:
+        cotMenu_ShortcutEnter(true, 2, 3, 0);
+        break;
 
-    // case 7:
-    //     cotMenu_EnterShortcutMenu(moreSetMenuId);
-    //     break;
+    case 7:
+        cotMenu_ShortcutEnter(true, 2, 3, 4);
+        break;
         
     default:
         break;    

@@ -5,8 +5,9 @@
 
 extern const MenuImage_t sgc_CameraImage;
 
-void Hmi_CameraLoad(void);
+void Hmi_CameraEnter(void);
 void Hmi_CameraExit(void);
+void Hmi_CameraLoad(void);
 void Hmi_CameraTask(void);
 
 #endif

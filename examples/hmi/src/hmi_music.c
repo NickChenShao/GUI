@@ -12,14 +12,19 @@ const MenuImage_t sgc_MusicImage = {
 "@"
 };
 
-void Hmi_MusicLoad(void)
+void Hmi_MusicEnter(void)
 {
-    sg_isInit = true;
+
 }
 
 void Hmi_MusicExit(void)
 {
 
+}
+
+void Hmi_MusicLoad(void)
+{
+    sg_isInit = true;
 }
 
 void Hmi_MusicTask(void)
@@ -30,7 +35,7 @@ void Hmi_MusicTask(void)
     {
         sg_isInit = false;
         printf("--------------------------\n");
-        printf("    éŸ³ä¹åŠŸèƒ½æµ‹è¯•ç•Œé¢\n");
+        printf("    ÒôÀÖ¹¦ÄÜ²âÊÔ½çÃæ\n");
         printf("--------------------------\n");
 #ifdef _WIN32
         Sleep(1000);
@@ -39,8 +44,8 @@ void Hmi_MusicTask(void)
 #endif
     }
 
-    printf("é€‰æ‹©æ“ä½œ(0-é€€å‡º): ");
-    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
+    printf("Ñ¡Ôñ²Ù×÷(0-ÍË³ö): ");
+    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
 
     if (cmd == 0)
     {
