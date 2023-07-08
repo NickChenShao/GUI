@@ -40,6 +40,9 @@
 /* 菜单支持的最大选项数目 */
 #define MENU_MAX_NUM                20
 
+/* 菜单支持的语种数目 */
+#define MENU_SUPPORT_LANGUAGE       2
+
 /******************************************* 配置项 ********************************************************************/
 
 
@@ -76,10 +79,8 @@ typedef void (*ShowMenuCallFun_f)(MenuShow_t *ptShowInfo);
   */
 typedef struct
 {
-    const char     *pszDesc;            /*!< 当前选项的中文字符串描述 */
+    const char        *(pszDesc[MENU_SUPPORT_LANGUAGE]);/*!< 当前选项的字符串描述(多语种) */
 
-    const char     *pszEnDesc;          /*!< 当前选项的英文字符串描述 */
-    
     MenuCallFun_f     pfnEnterCallFun;  /*!< 当前菜单选项进入时(从父菜单进入)需要执行一次的函数, 为NULL不执行 */
 
     MenuCallFun_f     pfnExitCallFun;   /*!< 当前菜单选项进入后退出时(退出至父菜单)需要执行一次的函数, 为NULL不执行 */
@@ -97,9 +98,7 @@ typedef struct
   */
 typedef struct
 {
-    const char     *pszDesc;            /*!< 主菜单的中文字符串描述 */
-
-    const char     *pszEnDesc;          /*!< 主菜单的英文字符串描述 */
+    const char      *(pszDesc[MENU_SUPPORT_LANGUAGE]);/*!< 当前选项的字符串描述(多语种) */
 
     MenuCallFun_f   pfnEnterCallFun;    /*!< 主前菜单进入时(进入菜单)需要执行一次的函数, 为NULL不执行 */
 
@@ -126,17 +125,12 @@ extern int cotMenu_Bind(MenuList_t *pMenuList, menusize_t menuNum, ShowMenuCallF
 
 /* 菜单功能设置 */
 
-extern int cotMenu_EnableEnglish(bool isEnable);
+extern int cotMenu_SelectLanguage(uint8_t languageIdx);
 
 /* 菜单选项显示时需要使用的功能扩展函数 */
 
 extern int cotMenu_LimitShowListNum(MenuShow_t *ptMenuShow, menusize_t *pShowNum);
 extern int cotMenu_QueryParentMenu(MenuShow_t *ptMenuShow, uint8_t level);
-
-/* 菜单状态获取函数 */
-
-extern bool cotMenu_IsRun(void);
-extern bool cotMenu_IsEnglish(void);
 
 /* 菜单操作 */
 

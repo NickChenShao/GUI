@@ -38,8 +38,7 @@
 typedef struct MenuCtrl
 {
     struct MenuCtrl    *pParentMenuCtrl;    /*!< 父菜单控制处理 */
-    char               *pszDesc;            /*!< 当前菜单的中文字符串描述 */
-    char               *pszEnDesc;          /*!< 当前菜单的英文字符串描述 */
+    char               *(pszDesc[MENU_SUPPORT_LANGUAGE]);/*!< 当前选项的字符串描述(多语种) */
     ShowMenuCallFun_f   pfnShowMenuFun;     /*!< 当前菜单显示效果函数 */
     MenuList_t         *pMenuList;          /*!< 当前菜单列表 */
     MenuCallFun_f       pfnLoadCallFun;     /*!< 当前菜单加载函数 */
@@ -56,7 +55,7 @@ typedef struct
     MenuCallFun_f      pfnMainEnterCallFun; /*!< 主菜单进入时(进入菜单)需要执行一次的函数 */
     MenuCallFun_f      pfnMainExitCallFun;  /*!< 主菜单进入后退出时(退出菜单)需要执行一次的函数 */
     MenuCallFun_f      pfnLoadCallFun;      /*!< 重加载函数 */
-    bool               isEnglish;           /*!< 是否使能英文 */
+    uint8_t            language;            /*!< 语种选择 */
     uint8_t            isEnterMainMenu : 1; /*!< 是否进入了主菜单 */
 }MenuManage_t;
 
@@ -74,7 +73,6 @@ static uint8_t    sg_currMenuDepth = 0;
 /* Private function prototypes ---------------------------------------------------------------------------------------*/
 static MenuCtrl_t *NewMenu(void);
 static void DeleteMenu(MenuCtrl_t *pMenu);
-static MenuCtrl_t *MianMenu(void);
 
 /* Private function --------------------------------------------------------------------------------------------------*/
 /**
@@ -116,23 +114,6 @@ static void DeleteMenu(MenuCtrl_t *pMenu)
 }
 
 /**
-  * @brief      得到主菜单控制处理指针
-  * 
-  * @return     MenuCtrl_t* 
-  */
-static MenuCtrl_t *MianMenu(void)
-{
-    MenuCtrl_t *pMenuCtrl = sg_tMenuManage.pMenuCtrl;
-
-    while (pMenuCtrl != NULL && pMenuCtrl->pParentMenuCtrl != NULL)
-    {
-        pMenuCtrl = pMenuCtrl->pParentMenuCtrl;
-    }
-
-    return pMenuCtrl;
-} 
-
-/**
   * @brief      菜单初始化
   * 
   * @param[in]  pMainMenu        主菜单注册信息
@@ -140,6 +121,7 @@ static MenuCtrl_t *MianMenu(void)
   */
 int cotMenu_Init(MainMenuCfg_t *pMainMenu)
 {
+    int i;
     MenuCtrl_t *pNewMenuCtrl = NULL;
 
     if (sg_tMenuManage.pMenuCtrl != NULL)
@@ -156,10 +138,13 @@ int cotMenu_Init(MainMenuCfg_t *pMainMenu)
         return -1;
     }
     
-    sg_tMenuManage.isEnglish = false;
+    sg_tMenuManage.language = 0;
 
-    pNewMenuCtrl->pszDesc = (char *)pMainMenu->pszDesc;
-    pNewMenuCtrl->pszEnDesc = (char *)pMainMenu->pszEnDesc;
+    for (i = 0; i < MENU_SUPPORT_LANGUAGE; i++)
+    {
+        pNewMenuCtrl->pszDesc[i] = (char *)pMainMenu->pszDesc[i];
+    }
+
     pNewMenuCtrl->pParentMenuCtrl = NULL;
     pNewMenuCtrl->pfnLoadCallFun = pMainMenu->pfnLoadCallFun;
     pNewMenuCtrl->pfnShowMenuFun = NULL;
@@ -196,7 +181,7 @@ int cotMenu_DeInit(void)
 
     DeleteMenu(sg_tMenuManage.pMenuCtrl);
     sg_tMenuManage.pMenuCtrl = NULL;
-    sg_tMenuManage.isEnglish = false;
+    sg_tMenuManage.language = 0;
     sg_tMenuManage.isEnterMainMenu = 0;
     sg_tMenuManage.pfnMainEnterCallFun = NULL;
     sg_tMenuManage.pfnMainExitCallFun = NULL;
@@ -237,24 +222,19 @@ int cotMenu_Bind(MenuList_t *pMenuList, menusize_t menuNum, ShowMenuCallFun_f pf
 }
 
 /**
-  * @brief      是否为英文显示
+  * @brief      选择语种
   * 
-  * @return     false,中文; true,英文 
+  * @param[in]  languageIdx 语种索引
+  * @return     0,成功; -1,失败
   */
-bool cotMenu_IsEnglish(void)
+int cotMenu_SelectLanguage(uint8_t languageIdx)
 {
-    return sg_tMenuManage.isEnglish;
-}
+    if (MENU_SUPPORT_LANGUAGE <= languageIdx)
+    {
+        return -1;
+    }
 
-/**
-  * @brief      使能英文显示
-  * 
-  * @param[in]  isEnable 使能英文显示
-  * @return     0,成功; -1,失败  
-  */
-int cotMenu_EnableEnglish(bool isEnable)
-{
-    sg_tMenuManage.isEnglish = isEnable;
+    sg_tMenuManage.language = languageIdx;
     return 0;
 }
 
@@ -282,21 +262,6 @@ int cotMenu_Reset(void)
     sg_tMenuManage.pMenuCtrl->selectItem = 0;
     
     return 0;
-}
-
-/**
-  * @brief      菜单功能是否正在运行
-  * 
-  * @return     false,已停止运行; true,正在运行
-  */
-bool cotMenu_IsRun(void)
-{
-    if (sg_tMenuManage.pMenuCtrl == NULL || sg_tMenuManage.isEnterMainMenu == 0)
-    {
-        return false;
-    }
-
-    return true;
 }
 
 /**
@@ -354,6 +319,7 @@ int cotMenu_MainExit(void)
   */
 int cotMenu_Enter(void)
 {
+    int i;
     MenuCtrl_t *pNewMenuCtrl = NULL;
     MenuCtrl_t *pCurrMenuCtrl = sg_tMenuManage.pMenuCtrl;
 
@@ -367,8 +333,11 @@ int cotMenu_Enter(void)
         return -1;
     }
 
-    pNewMenuCtrl->pszDesc = (char *)pCurrMenuCtrl->pMenuList[pCurrMenuCtrl->selectItem].pszDesc;
-    pNewMenuCtrl->pszEnDesc = (char *)pCurrMenuCtrl->pMenuList[pCurrMenuCtrl->selectItem].pszEnDesc;
+    for (i = 0; i < MENU_SUPPORT_LANGUAGE; i++)
+    {
+        pNewMenuCtrl->pszDesc[i] = (char *)pCurrMenuCtrl->pMenuList[pCurrMenuCtrl->selectItem].pszDesc[i];
+    }
+
     pNewMenuCtrl->pMenuList = NULL;
     pNewMenuCtrl->itemsNum = 0;
     pNewMenuCtrl->pfnShowMenuFun = pCurrMenuCtrl->pfnShowMenuFun;
@@ -524,7 +493,7 @@ int cotMenu_ShortcutEnter(bool isAbsolute, uint8_t deep, ...)
 
     while (selectDeep < deep)
     {
-        selectItem = va_arg(pItemList, menusize_t);
+        selectItem = va_arg(pItemList, int);
 
         if (selectItem >= sg_tMenuManage.pMenuCtrl->itemsNum)
         {
@@ -608,27 +577,14 @@ int cotMenu_QueryParentMenu(MenuShow_t *ptMenuShow, uint8_t level)
         ptMenuShow->selectItem = pMenuCtrl->selectItem;
         ptMenuShow->showBaseItem = pMenuCtrl->showBaseItem;
 
-        if (sg_tMenuManage.isEnglish)
+        ptMenuShow->pszDesc = sg_tMenuManage.pMenuCtrl->pszDesc[sg_tMenuManage.language];
+
+        for (i = 0; i < ptMenuShow->itemsNum && i < MENU_MAX_NUM; i++)
         {
-            ptMenuShow->pszDesc = pMenuCtrl->pszEnDesc;
-            
-            for (i = 0; i < ptMenuShow->itemsNum && i < MENU_MAX_NUM; i++)
-            {
-                ptMenuShow->pszItemsDesc[i] = (char *)pMenu[i].pszEnDesc;
-                ptMenuShow->pItemsExData[i] = pMenu[i].pExtendData;
-            }        
-        }
-        else
-        {
-            ptMenuShow->pszDesc = pMenuCtrl->pszDesc;
-            
-            for (i = 0; i < ptMenuShow->itemsNum && i < MENU_MAX_NUM; i++)
-            {
-                ptMenuShow->pszItemsDesc[i] = (char *)pMenu[i].pszDesc;
-                ptMenuShow->pItemsExData[i] = pMenu[i].pExtendData;
-            }        
-        }
-        
+            ptMenuShow->pszItemsDesc[i] = (char *)pMenu[i].pszDesc[sg_tMenuManage.language];
+            ptMenuShow->pItemsExData[i] = pMenu[i].pExtendData;
+        } 
+
         pMenuCtrl = pMenuCtrl->pParentMenuCtrl;
         level--;
     }
@@ -670,25 +626,12 @@ int cotMenu_Task(void)
         tMenuShow.selectItem = sg_tMenuManage.pMenuCtrl->selectItem;
         tMenuShow.showBaseItem = sg_tMenuManage.pMenuCtrl->showBaseItem;
 
-        if (sg_tMenuManage.isEnglish)
+        tMenuShow.pszDesc = sg_tMenuManage.pMenuCtrl->pszDesc[sg_tMenuManage.language];
+
+        for (i = 0; i < tMenuShow.itemsNum && i < MENU_MAX_NUM; i++)
         {
-            tMenuShow.pszDesc = sg_tMenuManage.pMenuCtrl->pszEnDesc;
-            
-            for (i = 0; i < tMenuShow.itemsNum && i < MENU_MAX_NUM; i++)
-            {
-                tMenuShow.pszItemsDesc[i] = (char *)pMenuList[i].pszEnDesc;
-                tMenuShow.pItemsExData[i] = pMenuList[i].pExtendData;
-            }        
-        }
-        else
-        {
-            tMenuShow.pszDesc = sg_tMenuManage.pMenuCtrl->pszDesc;
-            
-            for (i = 0; i < tMenuShow.itemsNum && i < MENU_MAX_NUM; i++)
-            {
-                tMenuShow.pszItemsDesc[i] = (char *)pMenuList[i].pszDesc;
-                tMenuShow.pItemsExData[i] = pMenuList[i].pExtendData;
-            }        
+            tMenuShow.pszItemsDesc[i] = (char *)pMenuList[i].pszDesc[sg_tMenuManage.language];
+            tMenuShow.pItemsExData[i] = pMenuList[i].pExtendData;
         }
 
         if (sg_tMenuManage.pMenuCtrl->pfnShowMenuFun != NULL)
