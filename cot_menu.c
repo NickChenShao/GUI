@@ -53,6 +53,7 @@ typedef struct MenuCtrl
 typedef struct
 {
     MenuCtrl_t        *pMenuCtrl;           /*!< 当前菜单控制处理 */
+    MenuCallFun_f      pfnLoadCallFun;
     bool               isEnglish;           /*!< 是否使能英文 */
 }MenuManage_t;
 
@@ -167,12 +168,14 @@ int cotMenu_Init(MainMenuCfg_t *pMainMenu)
     pNewMenuCtrl->showBaseItem = 0;
 
     sg_tMenuManage.pMenuCtrl = pNewMenuCtrl;
+    
+    sg_tMenuManage.pfnLoadCallFun = pNewMenuCtrl->pfnLoadCallFun;
 
-    if (sg_tMenuManage.pMenuCtrl->pfnLoadCallFun != NULL)
+    if (pMainMenu->pfnEnterCallFun != NULL)
     {
-        sg_tMenuManage.pMenuCtrl->pfnLoadCallFun();
+        pMainMenu->pfnEnterCallFun();
     }
-
+    
     return 0;
 }
 
@@ -323,10 +326,11 @@ int cotMenu_Enter(void)
     pNewMenuCtrl->pParentMenuCtrl = pCurrMenuCtrl;
     
     sg_tMenuManage.pMenuCtrl = pNewMenuCtrl;
+    sg_tMenuManage.pfnLoadCallFun = pNewMenuCtrl->pfnLoadCallFun;
 
-    if (sg_tMenuManage.pMenuCtrl->pfnLoadCallFun != NULL)
+    if (pCurrMenuCtrl->pMenuList[pCurrMenuCtrl->selectItem].pfnEnterCallFun != NULL)
     {
-        sg_tMenuManage.pMenuCtrl->pfnLoadCallFun();
+        pCurrMenuCtrl->pMenuList[pCurrMenuCtrl->selectItem].pfnEnterCallFun();
     }
 
     return 0;
@@ -353,6 +357,7 @@ int cotMenu_Exit(bool isReset)
     }
 
     sg_tMenuManage.pMenuCtrl = sg_tMenuManage.pMenuCtrl->pParentMenuCtrl;
+    sg_tMenuManage.pfnLoadCallFun = sg_tMenuManage.pMenuCtrl->pfnLoadCallFun;
     DeleteMenu(pMenuCtrl);
     pMenuCtrl = NULL;
     
@@ -360,11 +365,6 @@ int cotMenu_Exit(bool isReset)
     {
         sg_tMenuManage.pMenuCtrl->isSelected = false;
         sg_tMenuManage.pMenuCtrl->pMenuList[sg_tMenuManage.pMenuCtrl->selectItem].pfnExitCallFun();
-    }
-
-    if (sg_tMenuManage.pMenuCtrl->pfnLoadCallFun != NULL)
-    {
-        sg_tMenuManage.pMenuCtrl->pfnLoadCallFun();
     }
 
     if (isReset)
@@ -604,6 +604,12 @@ int cotMenu_Task(void)
         return -1;
     }
 
+    if (sg_tMenuManage.pfnLoadCallFun != NULL)
+    {
+        sg_tMenuManage.pfnLoadCallFun();
+        sg_tMenuManage.pfnLoadCallFun = NULL;
+    }
+    
     if (sg_tMenuManage.pMenuCtrl->pMenuList != NULL)
     {
         pMenuList = sg_tMenuManage.pMenuCtrl->pMenuList;

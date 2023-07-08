@@ -10,8 +10,8 @@
   */
 
 /* Define to prevent recursive inclusion -----------------------------------------------------------------------------*/
-#ifndef MENU_H
-#define MENU_H
+#ifndef COT_MENU_H
+#define COT_MENU_H
 
 
 /* Includes ----------------------------------------------------------------------------------------------------------*/
@@ -79,10 +79,12 @@ typedef struct
     const char     *pszDesc;            /*!< 当前选项的中文字符串描述 */
 
     const char     *pszEnDesc;          /*!< 当前选项的英文字符串描述 */
+    
+    MenuCallFun_f     pfnEnterCallFun;  /*!< 当前菜单选项进入时(从父菜单进入)需要执行一次的函数, 为NULL不执行 */
 
-    MenuCallFun_f     pfnLoadCallFun;   /*!< 当前菜单选项每次加载时需要执行一次的函数, 为NULL不执行 */
-
-    MenuCallFun_f     pfnExitCallFun;   /*!< 当前菜单选项进入退出时需要执行一次的函数, 为NULL不执行 */
+    MenuCallFun_f     pfnExitCallFun;   /*!< 当前菜单选项进入后退出时(退出至父菜单)需要执行一次的函数, 为NULL不执行 */
+    
+    MenuCallFun_f     pfnLoadCallFun;   /*!< 当前菜单选项每次加载时(从父菜单进入或子菜单退出)需要执行一次的函数, 为NULL不执行 */
 
     MenuCallFun_f     pfnRunCallFun;    /*!< 当前菜单选项的周期调度函数 */
 
@@ -98,6 +100,10 @@ typedef struct
     const char     *pszDesc;            /*!< 主菜单的中文字符串描述 */
 
     const char     *pszEnDesc;          /*!< 主菜单的英文字符串描述 */
+
+    MenuCallFun_f   pfnEnterCallFun;    /*!< 主前菜单进入时(进入菜单)需要执行一次的函数, 为NULL不执行 */
+
+    MenuCallFun_f   pfnExitCallFun;     /*!< 主前菜单进入后退出时(退出菜单)需要执行一次的函数, 为NULL不执行 */
 
     MenuCallFun_f   pfnLoadCallFun;     /*!< 主菜单每次加载时需要执行一次的函数, 为NULL不执行 */
 
