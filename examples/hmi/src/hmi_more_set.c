@@ -1,5 +1,5 @@
 #include "hmi_more_set.h"
-#include "cot_menu.h"
+#include "xmcore_menu_form.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -8,14 +8,14 @@ static void OnUpgradeFunction(void);
 static void OnAboutMenuFunction(void);
 
 
-/* ¸ü¶àÉèÖÃ */
+/* æ›´å¤šè®¾ç½® */
 MenuList_t sg_MoreSetMenuTable[] = 
 {
-    {{"Éı¼¶", "Upgrade"}, NULL, NULL, NULL, OnUpgradeFunction, NULL},
-    {{"¹ØÓÚ", "About"},   NULL, NULL, NULL, OnAboutMenuFunction, NULL},
+    {{"å‡çº§", "Upgrade"}, NULL, NULL, NULL, OnUpgradeFunction, NULL},
+    {{"å…³äº", "About"},   NULL, NULL, NULL, OnAboutMenuFunction, NULL},
 };
 
-/* ¸ü¶àÉèÖÃ²Ëµ¥ÏÔÊ¾Ğ§¹û: ÓÒ²àµ¯³ö²Ëµ¥Ğ§¹û */
+/* æ›´å¤šè®¾ç½®èœå•æ˜¾ç¤ºæ•ˆæœ: å³ä¾§å¼¹å‡ºèœå•æ•ˆæœ */
 static void ShowMoreSetMenu(MenuShow_t *ptShowInfo)
 {
     uint8_t showNum = 3;
@@ -84,8 +84,8 @@ void Hmi_MoreSetTask(void)
 {
     int cmd;
 
-    printf("Ñ¡Ôñ²Ù×÷(0-·µ»Ø; 1-·µ»ØÖ÷²Ëµ¥; 2-½øÈë; 3-ÏÂÒ»¸ö; 4-ÉÏÒ»¸ö): ");
-    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
+    printf("é€‰æ‹©æ“ä½œ(0-è¿”å›; 1-è¿”å›ä¸»èœå•; 2-è¿›å…¥; 3-ä¸‹ä¸€ä¸ª; 4-ä¸Šä¸€ä¸ª): ");
+    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
  
     switch (cmd)
     {
@@ -116,11 +116,11 @@ static void OnUpgradeFunction(void)
     int cmd;
 
     printf("--------------------------\n");
-    printf("     Éı¼¶Éı¼¶²âÊÔ½çÃæ\n");
+    printf("     å‡çº§å‡çº§æµ‹è¯•ç•Œé¢\n");
     printf("--------------------------\n");
     
-    printf("Ñ¡Ôñ²Ù×÷(0-ÍË³ö): ");
-    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
+    printf("é€‰æ‹©æ“ä½œ(0-é€€å‡º): ");
+    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
 
     if (cmd == 0)
     {
@@ -133,11 +133,11 @@ static void OnAboutMenuFunction(void)
     int cmd;
 
     printf("--------------------------\n");
-    printf("     ¹ØÓÚ²Ëµ¥¿ò¼Ü½çÃæ\n");
+    printf("     å…³äºèœå•æ¡†æ¶ç•Œé¢\n");
     printf("--------------------------\n");
 
-    printf("Ñ¡Ôñ²Ù×÷(0-ÍË³ö): ");
-    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
+    printf("é€‰æ‹©æ“ä½œ(0-é€€å‡º): ");
+    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
 
     if (cmd == 0)
     {

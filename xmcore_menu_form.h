@@ -1,6 +1,6 @@
 /**
   **********************************************************************************************************************
-  * @file    cot_menu.h
+  * @file    xmcore_menu_form.h
   * @brief   该文件提供菜单框架所有函数原型
   * @author  const_zpc    any question please send mail to const_zpc@163.com
   * @date    2023-06-21

@@ -1,5 +1,5 @@
 #include "hmi_video.h"
-#include "cot_menu.h"
+#include "xmcore_menu_form.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -27,11 +27,11 @@ void Hmi_VideoTask(void)
     int cmd;
 
     printf("--------------------------\n");
-    printf("     ÊÓÆµ¹¦ÄÜ²âÊÔ½çÃæ\n");
+    printf("     è§†é¢‘åŠŸèƒ½æµ‹è¯•ç•Œé¢\n");
     printf("--------------------------\n");
 
-    printf("Ñ¡Ôñ²Ù×÷(0-ÍË³ö): ");
-    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
+    printf("é€‰æ‹©æ“ä½œ(0-é€€å‡º): ");
+    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
 
     if (cmd == 0)
     {

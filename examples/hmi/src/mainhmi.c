@@ -4,27 +4,27 @@
 #include "hmi_set.h"
 #include "hmi_video.h"
 #include "hmi_common.h"
-#include "cot_menu.h"
+#include "xmcore_menu_form.h"
 #include <stdio.h>
 #include <string.h>
 
 
 
-/* Ö÷²Ëµ¥ */
+/* ä¸»èœå• */
 MenuList_t sg_MainMenuTable[] = 
 {
-    {{"  ÒôÀÖ  ", "  Music "},  Hmi_MusicEnter, Hmi_MusicExit, Hmi_MusicLoad, Hmi_MusicTask, (MenuImage_t *)&sgc_MusicImage},
+    {{"  éŸ³ä¹  ", "  Music "},  Hmi_MusicEnter, Hmi_MusicExit, Hmi_MusicLoad, Hmi_MusicTask, (MenuImage_t *)&sgc_MusicImage},
     
-    {{"  ÊÓÆµ  ", "  Video "},  NULL, Hmi_VideoExit, Hmi_VideoLoad, Hmi_VideoTask, (MenuImage_t *)&sgc_VideoImage},
+    {{"  è§†é¢‘  ", "  Video "},  NULL, Hmi_VideoExit, Hmi_VideoLoad, Hmi_VideoTask, (MenuImage_t *)&sgc_VideoImage},
     
-    {{" ÉãÏñ»ú ", " Camera "},  Hmi_CameraEnter, Hmi_CameraExit, Hmi_CameraLoad, Hmi_CameraTask, (MenuImage_t *)&sgc_CameraImage},
+    {{" æ‘„åƒæœº ", " Camera "},  Hmi_CameraEnter, Hmi_CameraExit, Hmi_CameraLoad, Hmi_CameraTask, (MenuImage_t *)&sgc_CameraImage},
     
-    {{"  ÉèÖÃ  ", " Setting"},  Hmi_SetEnter, Hmi_SetExit, Hmi_SetLoad,   Hmi_SetTask, (MenuImage_t *)&sgc_SettingImage},
+    {{"  è®¾ç½®  ", " Setting"},  Hmi_SetEnter, Hmi_SetExit, Hmi_SetLoad,   Hmi_SetTask, (MenuImage_t *)&sgc_SettingImage},
 };
 
 
 
-/* Ö÷²Ëµ¥ÏÔÊ¾Ğ§¹û */
+/* ä¸»èœå•æ˜¾ç¤ºæ•ˆæœ */
 static void ShowMainMenu(MenuShow_t *ptShowInfo)
 {
     uint8_t showNum = 3;
@@ -96,8 +96,8 @@ void Hmi_MainTask(void)
 {
     int cmd;
 
-    printf("Ñ¡Ôñ²Ù×÷(0-ÍË³öÖ÷²Ëµ¥; 2-½øÈë; 3-ÏÂÒ»¸ö; 4-ÉÏÒ»¸ö; 5-¿ì½İÒôÀÖ; 6-¿ì½İÓïÑÔ; 7-¿ì½İ¸ü¶àÉèÖÃ): ");
-    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
+    printf("é€‰æ‹©æ“ä½œ(0-é€€å‡ºä¸»èœå•; 2-è¿›å…¥; 3-ä¸‹ä¸€ä¸ª; 4-ä¸Šä¸€ä¸ª; 5-å¿«æ·éŸ³ä¹; 6-å¿«æ·è¯­è¨€; 7-å¿«æ·æ›´å¤šè®¾ç½®): ");
+    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
  
     switch (cmd)
     {

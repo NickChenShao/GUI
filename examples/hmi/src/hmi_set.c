@@ -1,6 +1,6 @@
 #include "hmi_set.h"
 #include "hmi_more_set.h"
-#include "cot_menu.h"
+#include "xmcore_menu_form.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -15,17 +15,17 @@ static void OnBluetoothFunction(void);
 static void OnBatteryFunction(void);
 static void OnStorageFunction(void);
 
-/* ÉèÖÃ²Ëµ¥ */
+/* è®¾ç½®èœå• */
 MenuList_t sg_SetMenuTable[] = 
 {
-    {{"ÓïÑÔ", "Language"},   NULL, NULL, NULL, OnLanguageFunction, NULL},
-    {{"À¶ÑÀ", "Bluetooth"},  NULL, NULL, NULL, OnBluetoothFunction, NULL},
-    {{"µç³Ø", "Battery"},    NULL, NULL, NULL, OnBatteryFunction, NULL},
-    {{"´¢´æ", "Store"},      NULL, NULL, NULL, OnStorageFunction, NULL},
-    {{"¸ü¶à", "More"},       Hmi_MoreSetEnter, Hmi_MoreSetExit, Hmi_MoreSetLoad, Hmi_MoreSetTask, NULL},
+    {{"è¯­è¨€", "Language"},   NULL, NULL, NULL, OnLanguageFunction, NULL},
+    {{"è“ç‰™", "Bluetooth"},  NULL, NULL, NULL, OnBluetoothFunction, NULL},
+    {{"ç”µæ± ", "Battery"},    NULL, NULL, NULL, OnBatteryFunction, NULL},
+    {{"å‚¨å­˜", "Store"},      NULL, NULL, NULL, OnStorageFunction, NULL},
+    {{"æ›´å¤š", "More"},       Hmi_MoreSetEnter, Hmi_MoreSetExit, Hmi_MoreSetLoad, Hmi_MoreSetTask, NULL},
 };
 
-/* ÉèÖÃ²Ëµ¥ÏÔÊ¾Ğ§¹û */
+/* è®¾ç½®èœå•æ˜¾ç¤ºæ•ˆæœ */
 static void ShowSetMenu(MenuShow_t *ptShowInfo)
 {
     uint8_t showNum = 3;
@@ -69,8 +69,8 @@ void Hmi_SetTask(void)
 {
     int cmd;
 
-    printf("Ñ¡Ôñ²Ù×÷(0-·µ»Ø; 1-·µ»ØÖ÷²Ëµ¥; 2-½øÈë; 3-ÏÂÒ»¸ö; 4-ÉÏÒ»¸ö): ");
-    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
+    printf("é€‰æ‹©æ“ä½œ(0-è¿”å›; 1-è¿”å›ä¸»èœå•; 2-è¿›å…¥; 3-ä¸‹ä¸€ä¸ª; 4-ä¸Šä¸€ä¸ª): ");
+    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
  
     switch (cmd)
     {
@@ -101,11 +101,11 @@ static void OnLanguageFunction(void)
     int cmd;
 
     printf("--------------------------\n");
-    printf("     ÓïÑÔ¹¦ÄÜ²âÊÔ½çÃæ\n");
+    printf("     è¯­è¨€åŠŸèƒ½æµ‹è¯•ç•Œé¢\n");
     printf("--------------------------\n");
     
-    printf("Ñ¡Ôñ²Ù×÷(0-ÖĞÎÄ; 1-English): ");
-    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
+    printf("é€‰æ‹©æ“ä½œ(0-ä¸­æ–‡; 1-English): ");
+    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
 
     if (cmd == 0)
     {
@@ -116,7 +116,7 @@ static void OnLanguageFunction(void)
         cotMenu_SelectLanguage(1);
     }
 
-    cotMenu_Exit(0); // ÇĞ»»ºó×Ô¶¯ÍË³ö
+    cotMenu_Exit(0); // åˆ‡æ¢åè‡ªåŠ¨é€€å‡º
 }
 
 static void OnBluetoothFunction(void)
@@ -124,11 +124,11 @@ static void OnBluetoothFunction(void)
     int cmd;
 
     printf("--------------------------\n");
-    printf("     À¶ÑÀ¹¦ÄÜ²âÊÔ½çÃæ\n");
+    printf("     è“ç‰™åŠŸèƒ½æµ‹è¯•ç•Œé¢\n");
     printf("--------------------------\n");
 
-    printf("Ñ¡Ôñ²Ù×÷(0-ÍË³ö): ");
-    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
+    printf("é€‰æ‹©æ“ä½œ(0-é€€å‡º): ");
+    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
 
     if (cmd == 0)
     {
@@ -141,11 +141,11 @@ static void OnBatteryFunction(void)
     int cmd;
 
     printf("--------------------------\n");
-    printf("     µç³Ø¹¦ÄÜ²âÊÔ½çÃæ\n");
+    printf("     ç”µæ± åŠŸèƒ½æµ‹è¯•ç•Œé¢\n");
     printf("--------------------------\n");
 
-    printf("Ñ¡Ôñ²Ù×÷(0-ÍË³ö): ");
-    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
+    printf("é€‰æ‹©æ“ä½œ(0-é€€å‡º): ");
+    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
 
     if (cmd == 0)
     {
@@ -158,11 +158,11 @@ static void OnStorageFunction(void)
     int cmd;
 
     printf("--------------------------\n");
-    printf("     ´¢´æ¹¦ÄÜ²âÊÔ½çÃæ\n");
+    printf("     å‚¨å­˜åŠŸèƒ½æµ‹è¯•ç•Œé¢\n");
     printf("--------------------------\n");
 
-    printf("Ñ¡Ôñ²Ù×÷(0-ÍË³ö): ");
-    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
+    printf("é€‰æ‹©æ“ä½œ(0-é€€å‡º): ");
+    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
 
     if (cmd == 0)
     {

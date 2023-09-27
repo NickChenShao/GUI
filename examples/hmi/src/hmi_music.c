@@ -1,5 +1,5 @@
 #include "hmi_music.h"
-#include "cot_menu.h"
+#include "xmcore_menu_form.h"
 #include <stdio.h>
 #include <string.h>
 #ifdef _WIN32
@@ -35,7 +35,7 @@ void Hmi_MusicTask(void)
     {
         sg_isInit = false;
         printf("--------------------------\n");
-        printf("    ÒôÀÖ¹¦ÄÜ²âÊÔ½çÃæ\n");
+        printf("    éŸ³ä¹åŠŸèƒ½æµ‹è¯•ç•Œé¢\n");
         printf("--------------------------\n");
 #ifdef _WIN32
         Sleep(1000);
@@ -44,8 +44,8 @@ void Hmi_MusicTask(void)
 #endif
     }
 
-    printf("Ñ¡Ôñ²Ù×÷(0-ÍË³ö): ");
-    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
+    printf("é€‰æ‹©æ“ä½œ(0-é€€å‡º): ");
+    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
 
     if (cmd == 0)
     {

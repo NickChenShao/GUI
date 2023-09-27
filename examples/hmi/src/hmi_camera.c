@@ -1,5 +1,5 @@
 #include "hmi_camera.h"
-#include "cot_menu.h"
+#include "xmcore_menu_form.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -18,14 +18,14 @@ const MenuImage_t sgc_CameraImage = {
 static void OnPhotoFunctionTask(void);
 static void OnCameraFunctionTask(void);
 
-/* ÉãÏñ»ú²Ëµ¥ */
+/* æ‘„åƒæœºèœå• */
 MenuList_t sg_CameraMenuTable[] = 
 {
-    {{"ÅÄÕÕ", "Photo"}, NULL, NULL, NULL, OnPhotoFunctionTask, NULL},
-    {{"ÉãÓ°", "Camera"}, NULL, NULL, NULL, OnCameraFunctionTask, NULL},
+    {{"æ‹ç…§", "Photo"}, NULL, NULL, NULL, OnPhotoFunctionTask, NULL},
+    {{"æ‘„å½±", "Camera"}, NULL, NULL, NULL, OnCameraFunctionTask, NULL},
 };
 
-/* ÉãÏñ»ú²Ëµ¥ÏÔÊ¾Ğ§¹û */
+/* æ‘„åƒæœºèœå•æ˜¾ç¤ºæ•ˆæœ */
 static void ShowCameraMenu(MenuShow_t *ptShowInfo)
 {
     uint8_t showNum = 3;
@@ -59,13 +59,13 @@ void Hmi_CameraLoad(void)
 {
     CLEAR();
     MOVETO(0, 0);
-    printf("---¼ÓÔØ-----\n");
+    printf("---åŠ è½½-----\n");
 }
 
 void Hmi_CameraExit(void)
 {
     printf("--------------------------\n");
-    printf("     ÊÓÆµÕıÔÚÍ£Ö¹²¥·Å...\n");
+    printf("     è§†é¢‘æ­£åœ¨åœæ­¢æ’­æ”¾...\n");
     printf("--------------------------\n");
 #ifdef _WIN32
     Sleep(1000);
@@ -78,8 +78,8 @@ void Hmi_CameraTask(void)
 {
     int cmd;
 
-    printf("Ñ¡Ôñ²Ù×÷(0-·µ»Ø; 1-·µ»ØÖ÷²Ëµ¥; 2-½øÈë; 3-ÏÂÒ»¸ö; 4-ÉÏÒ»¸ö): ");
-    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
+    printf("é€‰æ‹©æ“ä½œ(0-è¿”å›; 1-è¿”å›ä¸»èœå•; 2-è¿›å…¥; 3-ä¸‹ä¸€ä¸ª; 4-ä¸Šä¸€ä¸ª): ");
+    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
  
     switch (cmd)
     {
@@ -111,11 +111,11 @@ static void OnPhotoFunctionTask(void)
     int cmd = 0;
 
     printf("--------------------------\n");
-    printf("     ÅÄÕÕ¹¦ÄÜ²âÊÔ½çÃæ\n");
+    printf("     æ‹ç…§åŠŸèƒ½æµ‹è¯•ç•Œé¢\n");
     printf("--------------------------\n");
 
-    printf("Ñ¡Ôñ²Ù×÷(0-ÍË³ö): ");
-    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
+    printf("é€‰æ‹©æ“ä½œ(0-é€€å‡º): ");
+    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
 
     if (cmd == 0)
     {
@@ -128,11 +128,11 @@ static void OnCameraFunctionTask(void)
     int cmd = 0;
 
     printf("--------------------------\n");
-    printf("     ÉãÏñ¹¦ÄÜ²âÊÔ½çÃæ\n");
+    printf("     æ‘„åƒåŠŸèƒ½æµ‹è¯•ç•Œé¢\n");
     printf("--------------------------\n");
 
-    printf("Ñ¡Ôñ²Ù×÷(0-ÍË³ö): ");
-    scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
+    printf("é€‰æ‹©æ“ä½œ(0-é€€å‡º): ");
+    scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
 
     if (cmd == 0)
     {

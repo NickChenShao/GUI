@@ -1,11 +1,11 @@
 
-/* ²Ëµ¥ÏÔÊ¾Ğ§¹ûÍ¼¿É¿´: 
+/* èœå•æ˜¾ç¤ºæ•ˆæœå›¾å¯çœ‹: 
 
 https://blog.csdn.net/qq_24130227/article/details/121167276 
 
 */
 
-#include "cot_menu.h"
+#include "xmcore_menu_form.h"
 #include "mainhmi.h"
 #include <stdio.h>
 #include <string.h>
@@ -27,7 +27,7 @@ int main(int argc, char **argv)
     int cmd = 0;
     int8_t musicMenuId, languageMenuId, moreSetMenuId;
     
-    MainMenuCfg_t tMainMenu = {{"Ö÷²Ëµ¥", "Main Menu"}, EnterMainMenu, ExitMainMenu, Hmi_LoadMainHmi, Hmi_MainTask};
+    MainMenuCfg_t tMainMenu = {{"ä¸»èœå•", "Main Menu"}, EnterMainMenu, ExitMainMenu, Hmi_LoadMainHmi, Hmi_MainTask};
 
     cotMenu_Init(&tMainMenu);
     
@@ -38,8 +38,8 @@ int main(int argc, char **argv)
 
         if (!isEnterMenu)
         {
-            printf("Ñ¡Ôñ²Ù×÷(0-½øÈëÖ÷²Ëµ¥; 1-ÍË³ö): ");
-            scanf(" %d", &cmd); // ¿Õ¸ñ×÷ÓÃÊÇºöÂÔÉÏ´ÎµÄ»Ø³µ
+            printf("é€‰æ‹©æ“ä½œ(0-è¿›å…¥ä¸»èœå•; 1-é€€å‡º): ");
+            scanf(" %d", &cmd); // ç©ºæ ¼ä½œç”¨æ˜¯å¿½ç•¥ä¸Šæ¬¡çš„å›è½¦
 
             if (cmd == 0)
             {

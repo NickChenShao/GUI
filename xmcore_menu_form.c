@@ -24,7 +24,7 @@
   */
 
 /* Includes ----------------------------------------------------------------------------------------------------------*/
-#include "cot_menu.h"
+#include "xmcore_menu_form.h"
 
 #ifdef _MENU_USE_MALLOC_
 #include <malloc.h>
