@@ -19,8 +19,8 @@
 #include <stdbool.h>
 
 #ifdef __cplusplus
- extern "C" {
-#endif 
+extern "C" {
+#endif
 
 #ifndef NULL
 #define NULL 0
@@ -49,108 +49,172 @@
 /* Exported types ----------------------------------------------------------------------------------------------------*/
 
 #if MENU_MAX_NUM < 255
-typedef uint8_t menusize_t;
+typedef uint8_t MenuSize;
 #else
-typedef uint16_t menusize_t;
+typedef uint16_t MenuSize;
 #endif
 
-typedef void (*MenuCallFun_f)(void);
+typedef void (*menuAnyCallFuncPtr)(void);
+typedef uint8_t (*MenuAnyCallFuncPtr)(uint8_t* pContentAddr,uint8_t level,void* pExtendInputData);
+typedef void (*MenuRunCallFuncPtr)(void* pExtendInputData);
+typedef void (*MenuGetInputDataCallFuncPtr)(void* pExtendInputData);
+
 
 typedef struct
 {
-    menusize_t itemsNum;                /*!< 当前菜单中选项的总数目 */
+	MenuSize itemsNum;                /*!< 当前菜单中选项的总数目 */
 
-    menusize_t selectItem;              /*!< 当前菜单中被选中的选项 */
+	MenuSize selectItem;              /*!< 当前菜单中被选中的选项 */
 
-    menusize_t showBaseItem;            /*!< 当前菜单首个显示的选项 */
-    
-    char     *pszDesc;                  /*!< 当前菜单的字符串描述 */
+	MenuSize showBaseItem;            /*!< 当前菜单首个显示的选项 */
 
-    char *pszItemsDesc[MENU_MAX_NUM];   /*!< 当前菜单中所有选项的字符串描述 */
+	char*    apszDesc;                  /*!< 当前菜单的字符串描述 */
 
-    void *pItemsExData[MENU_MAX_NUM];   /*!< 当前菜单中所有选项注册时的扩展数据 */
-} MenuShow_t;
+	char*    pszItemsDesc[MENU_MAX_NUM];   /*!< 当前菜单中所有选项的字符串描述 */
 
-typedef void (*ShowMenuCallFun_f)(MenuShow_t *ptShowInfo); 
+	void*    pItemsExData[MENU_MAX_NUM];   /*!< 当前菜单中所有选项注册时的扩展数据 */
+} MenuShow_s;
+
+typedef void (*ShowmenuAnyCallFuncPtr)(MenuShow_s* pstShowInfo);
+typedef void (*RunmenuAnyCallFuncPtr)(MenuShow_s* pstShowInfo);
+
 
 /**
   * @brief 菜单信息注册结构体
-  * 
+  *
   */
 typedef struct
 {
-    const char        *(pszDesc[MENU_SUPPORT_LANGUAGE]);/*!< 当前选项的字符串描述(多语种) */
+	const char*			apszDesc[MENU_SUPPORT_LANGUAGE];/*!< 当前选项的字符串描述(多语种) */
 
-    MenuCallFun_f     pfnEnterCallFun;  /*!< 当前菜单选项进入时(从父菜单进入)需要执行一次的函数, 为NULL不执行 */
+	menuAnyCallFuncPtr		fnEnterCallFuncPtr;  /*!< 当前菜单选项进入时(从父菜单进入)需要执行一次的函数, 为NULL不执行 */
 
-    MenuCallFun_f     pfnExitCallFun;   /*!< 当前菜单选项进入后退出时(退出至父菜单)需要执行一次的函数, 为NULL不执行 */
-    
-    MenuCallFun_f     pfnLoadCallFun;   /*!< 当前菜单选项每次加载时(从父菜单进入或子菜单退出)需要执行一次的函数, 为NULL不执行 */
+	menuAnyCallFuncPtr		fnExitCallFuncPtr;   /*!< 当前菜单选项进入后退出时(退出至父菜单)需要执行一次的函数, 为NULL不执行 */
 
-    MenuCallFun_f     pfnRunCallFun;    /*!< 当前菜单选项的周期调度函数 */
+	menuAnyCallFuncPtr		fnLoadCallFuncPtr;   /*!< 当前菜单选项每次加载时(从父菜单进入或子菜单退出)需要执行一次的函数, 为NULL不执行 */
 
-    void             *pExtendData;      /*!< 当前选项的菜单显示效果函数扩展数据入参, 可自行设置该内容 */
-} MenuList_t, MenuItem_t;
+	MenuRunCallFuncPtr		fnRunCallFuncPtr;    /*!< 当前菜单选项的周期调度函数 */
+
+	void* 				pExtendData;      /*!< 当前选项的菜单显示效果函数扩展数据入参, 可自行设置该内容 */
+} MenuList_s, MenuItem_t;
 
 /**
   * @brief 菜单信息注册结构体
-  * 
+  *
   */
 typedef struct
 {
-    const char      *(pszDesc[MENU_SUPPORT_LANGUAGE]);/*!< 当前选项的字符串描述(多语种) */
+	const char*      apszDesc[MENU_SUPPORT_LANGUAGE];/*!< 当前选项的字符串描述(多语种) */
 
-    MenuCallFun_f   pfnEnterCallFun;    /*!< 主前菜单进入时(进入菜单)需要执行一次的函数, 为NULL不执行 */
+	menuAnyCallFuncPtr   fnEnterCallFuncPtr;    /*!< 主前菜单进入时(进入菜单)需要执行一次的函数, 为NULL不执行 */
 
-    MenuCallFun_f   pfnExitCallFun;     /*!< 主前菜单进入后退出时(退出菜单)需要执行一次的函数, 为NULL不执行 */
+	menuAnyCallFuncPtr   fnExitCallFuncPtr;     /*!< 主前菜单进入后退出时(退出菜单)需要执行一次的函数, 为NULL不执行 */
 
-    MenuCallFun_f   pfnLoadCallFun;     /*!< 主菜单每次加载时需要执行一次的函数, 为NULL不执行 */
+	menuAnyCallFuncPtr   fnLoadCallFuncPtr;     /*!< 主菜单每次加载时需要执行一次的函数, 为NULL不执行 */
 
-    MenuCallFun_f   pfnRunCallFun;      /*!< 主菜单周期调度函数 */
-}MainMenuCfg_t;
+	MenuRunCallFuncPtr   fnRunCallFuncPtr;      /*!< 主菜单周期调度函数 */
+} MainMenuCfg_s;
+
+/**
+  * @brief 菜单控制信息
+  *
+  */
+typedef struct MenuCtrl
+{
+	struct MenuCtrl*	pstParentMenuCtrl;    /*!< 父菜单控制处理 */
+	char*				apszDesc[MENU_SUPPORT_LANGUAGE];/*!< 当前选项的字符串描述(多语种) */
+	ShowmenuAnyCallFuncPtr	fnShowMenuFuncPtr;     /*!< 当前菜单显示效果函数 */
+	MenuList_s*			pstMenuList;          /*!< 当前菜单列表 */
+	menuAnyCallFuncPtr		fnLoadCallFuncPtr;     /*!< 当前菜单加载函数 */
+	MenuRunCallFuncPtr	fnRunCallFuncPtr;      /*!< 当前选项的非菜单功能函数 */
+	MenuSize			itemsNum;           /*!< 当前菜单选项总数目 */
+	MenuSize			showBaseItem;       /*!< 当前菜单首个显示的选项 */
+	MenuSize			selectItem;         /*!< 当前菜单选中的选项 */
+	bool				isSelected;         /*!< 菜单选项是否已经被选择 */
+} MenuCtrl_s;
+
+/**
+  * @brief 菜单管理信息
+  *
+  */
+
+typedef struct
+{
+	MenuCtrl_s*			pstNowMenuCtrl;           /*!< 当前菜单控制处理 */
+	menuAnyCallFuncPtr		fnMainEnterCallFuncPtr; /*!< 主菜单进入时(进入菜单)需要执行一次的函数 */
+	menuAnyCallFuncPtr		fnMainExitCallFuncPtr;  /*!< 主菜单进入后退出时(退出菜单)需要执行一次的函数 */
+	menuAnyCallFuncPtr		fnLoadCallFuncPtr;      /*!< 重加载函数 */
+//	menuAnyCallFuncPtr 	fnLoadCallFuncPtr;		/*!< 重加载函数 */
+	uint8_t				language;            /*!< 语种选择 */
+	uint8_t				isEnterMainMenu : 1; /*!< 是否进入了主菜单 */
+#ifndef _MENU_USE_MALLOC_	
+	MenuCtrl_s*			pArrMenuCtrlBuf;
+	MenuSize			menuCtrlMaxDepth;
+#endif
+	MenuGetInputDataCallFuncPtr	menuGetInputDataCallFuncPtr;
+	void*				pExtendInputData;
+	MenuAnyCallFuncPtr	menuAnyCallFuncPtr;
+	MenuSize			currMenuDepth;
+	uint16_t			timeTick;
+	uint16_t			confTimeTick;
+	
+	uint16_t			onShowTimeTick;
+	uint16_t			onShowConfTimeTick;
+	uint16_t			needFastRefresh;
+} MenuManage_s;
 
 /* Exported constants ------------------------------------------------------------------------------------------------*/
 /* Exported macro ----------------------------------------------------------------------------------------------------*/
 
-#define GET_MENU_NUM(X)    (sizeof(X) / sizeof(MenuList_t))
+#define GET_MENU_NUM(X)    (sizeof(X) / sizeof(MenuList_s))
 
 /* Exported functions ------------------------------------------------------------------------------------------------*/
 
 /* 菜单初始化和反初始化 */
 
-extern int cotMenu_Init(MainMenuCfg_t *pMainMenu);
-extern int cotMenu_DeInit(void);
+int LibXmCore_MenuForm_init(MenuManage_s* pstMenuManage, MainMenuCfg_s* pstMainMenu,	MenuCtrl_s*	pArrMenuCtrlBuf, MenuSize menuCtrlMaxDepth,MenuAnyCallFuncPtr menuAnyCallFuncPtr, 	MenuGetInputDataCallFuncPtr	fnGetInputDataCallFuncPtr, void* pExtendData);
+int LibXmCore_MenuForm_deInit(MenuManage_s* pstMenuManage);
 
-extern int cotMenu_Bind(MenuList_t *pMenuList, menusize_t menuNum, ShowMenuCallFun_f pfnShowMenuFun);
+int LibXmCore_MenuForm_bindMenuList(MenuManage_s* pstMenuManage,MenuList_s* pstMenuList, MenuSize menuNum, ShowmenuAnyCallFuncPtr fnShowMenuFuncPtr);
 
 /* 菜单功能设置 */
 
-extern int cotMenu_SelectLanguage(uint8_t languageIdx);
+int LibXmCore_MenuForm_selectLanguage(MenuManage_s* pstMenuManage, uint8_t languageIdx);
+
 
 /* 菜单选项显示时需要使用的功能扩展函数 */
 
-extern int cotMenu_LimitShowListNum(MenuShow_t *ptMenuShow, menusize_t *pShowNum);
-extern int cotMenu_QueryParentMenu(MenuShow_t *ptMenuShow, uint8_t level);
+int LibXmCore_MenuForm_limitShowListNum(MenuShow_s* ptMenuShow, MenuSize* pShowNum);
+
+int LibXmCore_MenuForm_queryParentMenu(MenuManage_s* pstMenuManage, MenuShow_s* ptMenuShow, uint8_t level);
+
+void LibXmCore_MenuForm_getMenuAddr(MenuManage_s* pstMenuManage, uint8_t* pContentAddr, uint8_t* pLevel);
 
 /* 菜单操作 */
+//开始和停止菜单
+int LibXmCore_MenuForm_startEnterMenu(MenuManage_s* pstMenuManage);
+int LibXmCore_MenuForm_exitStopMenu(MenuManage_s* pstMenuManage);
 
-extern int cotMenu_MainEnter(void);
-extern int cotMenu_MainExit(void);
 
-extern int cotMenu_Reset(void);
-extern int cotMenu_Enter(void);
-extern int cotMenu_Exit(bool isReset);
-extern int cotMenu_SelectPrevious(bool isAllowRoll);
-extern int cotMenu_SelectNext(bool isAllowRoll);
-
-extern int cotMenu_ShortcutEnter(bool isAbsolute, uint8_t deep, ...);
+int LibXmCore_MenuForm_reset(MenuManage_s* pstMenuManage);
+int LibXmCore_MenuForm_enter(MenuManage_s* pstMenuManage);
+int LibXmCore_MenuForm_exit(MenuManage_s* pstMenuManage, bool isReset);
+int LibXmCore_MenuForm_selectPrevious(MenuManage_s* pstMenuManage, bool isAllowRoll);
+int LibXmCore_MenuForm_selectNext(MenuManage_s* pstMenuManage, bool isAllowRoll);
+int LibXmCore_MenuForm_shortcutEnter(MenuManage_s* pstMenuManage, bool isAbsolute, uint8_t deep, ...);
 
 /* 菜单轮询处理任务 */
 
-extern int cotMenu_Task(void);
+int LibXmCore_MenuForm_processTask(MenuManage_s* pstMenuManage);
+void LibXmCore_MenuForm_setTick(MenuManage_s* pstMenuManage, uint16_t timeTick);
+uint16_t LibXmCore_MenuForm_getTick(MenuManage_s* pstMenuManage);
+void LibXmCore_MenuForm_refreshMenu(MenuManage_s* pstMenuManage);
+	void LibXmCore_MenuForm_setRefreshFreqDiv(MenuManage_s* pstMenuManage, uint16_t refreshFreqDiv);
+
+
 
 #ifdef __cplusplus
- }
+}
 #endif
 
 #endif // MENU_H

@@ -1,28 +1,28 @@
 #include "hmi_more_set.h"
-#include "xmcore_menu_form.h"
+#include "mainhmi.h"
 #include <stdio.h>
 #include <string.h>
 
 
-static void OnUpgradeFunction(void);
-static void OnAboutMenuFunction(void);
+static void OnUpgradeFunction(void* pExtendInputData);
+static void OnAboutMenuFunction(void* pExtendInputData);
 
 
 /* 更多设置 */
-MenuList_t sg_MoreSetMenuTable[] = 
+MenuList_s sg_MoreSetMenuTable[] = 
 {
     {{"升级", "Upgrade"}, NULL, NULL, NULL, OnUpgradeFunction, NULL},
     {{"关于", "About"},   NULL, NULL, NULL, OnAboutMenuFunction, NULL},
 };
 
 /* 更多设置菜单显示效果: 右侧弹出菜单效果 */
-static void ShowMoreSetMenu(MenuShow_t *ptShowInfo)
+static void ShowMoreSetMenu(MenuShow_s *pstShowInfo)
 {
     uint8_t showNum = 3;
     uint8_t showsubNum = 3;
-    menusize_t  tmpselect;
+    MenuSize  tmpselect;
 
-    MenuShow_t tParentMenuShowInfo;
+    MenuShow_s tParentMenuShowInfo;
 
     if (cotMenu_QueryParentMenu(&tParentMenuShowInfo, 1) != 0)
     {
@@ -30,9 +30,9 @@ static void ShowMoreSetMenu(MenuShow_t *ptShowInfo)
     }
 
     cotMenu_LimitShowListNum(&tParentMenuShowInfo, &showNum);
-    cotMenu_LimitShowListNum(ptShowInfo, &showsubNum);
+    cotMenu_LimitShowListNum(pstShowInfo, &showsubNum);
 
-    printf("\e[0;30;46m ------------- %s ------------- \e[0m\n", tParentMenuShowInfo.pszDesc);
+    printf("\e[0;30;46m ------------- %s ------------- \e[0m\n", tParentMenuShowInfo.apszDesc);
 
     for (int i = 0; i < showNum; i++)
     {
@@ -49,15 +49,15 @@ static void ShowMoreSetMenu(MenuShow_t *ptShowInfo)
 
         if (i < showsubNum)
         {
-            tmpselect = i + ptShowInfo->showBaseItem;
+            tmpselect = i + pstShowInfo->showBaseItem;
 
-            if (tmpselect == ptShowInfo->selectItem)
+            if (tmpselect == pstShowInfo->selectItem)
             {
-                printf(" \e[0;30;47m %-14s\e[0m", ptShowInfo->pszItemsDesc[tmpselect]);
+                printf(" \e[0;30;47m %-14s\e[0m", pstShowInfo->pszItemsDesc[tmpselect]);
             }
             else
             {
-                printf(" \e[7;30;47m %-14s\e[0m", ptShowInfo->pszItemsDesc[tmpselect]);
+                printf(" \e[7;30;47m %-14s\e[0m", pstShowInfo->pszItemsDesc[tmpselect]);
             }
         }
 
@@ -80,7 +80,7 @@ void Hmi_MoreSetExit(void)
 
 }
 
-void Hmi_MoreSetTask(void)
+void Hmi_MoreSetTask(void* pExtendInputData)
 {
     int cmd;
 
@@ -111,7 +111,7 @@ void Hmi_MoreSetTask(void)
 }
 
 
-static void OnUpgradeFunction(void)
+static void OnUpgradeFunction(void* pExtendInputData)
 {
     int cmd;
 
@@ -128,7 +128,7 @@ static void OnUpgradeFunction(void)
     }
 }
 
-static void OnAboutMenuFunction(void)
+static void OnAboutMenuFunction(void* pExtendInputData)
 {
     int cmd;
 

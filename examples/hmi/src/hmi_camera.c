@@ -1,5 +1,5 @@
 #include "hmi_camera.h"
-#include "xmcore_menu_form.h"
+#include "mainhmi.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -15,37 +15,37 @@ const MenuImage_t sgc_CameraImage = {
 };
 
 
-static void OnPhotoFunctionTask(void);
-static void OnCameraFunctionTask(void);
+static void OnPhotoFunctionTask(void* pExtendInputData);
+static void OnCameraFunctionTask(void* pExtendInputData);
 
 /* 摄像机菜单 */
-MenuList_t sg_CameraMenuTable[] = 
+MenuList_s sg_CameraMenuTable[] = 
 {
     {{"拍照", "Photo"}, NULL, NULL, NULL, OnPhotoFunctionTask, NULL},
     {{"摄影", "Camera"}, NULL, NULL, NULL, OnCameraFunctionTask, NULL},
 };
 
 /* 摄像机菜单显示效果 */
-static void ShowCameraMenu(MenuShow_t *ptShowInfo)
+static void ShowCameraMenu(MenuShow_s *pstShowInfo)
 {
     uint8_t showNum = 3;
-    menusize_t  tmpselect;
+    MenuSize  tmpselect;
 
-    cotMenu_LimitShowListNum(ptShowInfo, &showNum);
+    cotMenu_LimitShowListNum(pstShowInfo, &showNum);
 
-    printf("\e[0;30;46m ------------- %s ------------- \e[0m\n", ptShowInfo->pszDesc);
+    printf("\e[0;30;46m ------------- %s ------------- \e[0m\n", pstShowInfo->apszDesc);
 
     for (int i = 0; i < showNum; i++)
     {
-        tmpselect = i + ptShowInfo->showBaseItem;
+        tmpselect = i + pstShowInfo->showBaseItem;
 
-        if (tmpselect == ptShowInfo->selectItem)
+        if (tmpselect == pstShowInfo->selectItem)
         {
-            printf("\e[0;30;47m %d. %-34s\e[0m\n", tmpselect + 1, ptShowInfo->pszItemsDesc[tmpselect]);
+            printf("\e[0;30;47m %d. %-34s\e[0m\n", tmpselect + 1, pstShowInfo->pszItemsDesc[tmpselect]);
         }
         else
         {
-            printf("\e[7;30;47m %d. %-34s\e[0m\n", tmpselect + 1, ptShowInfo->pszItemsDesc[tmpselect]);
+            printf("\e[7;30;47m %d. %-34s\e[0m\n", tmpselect + 1, pstShowInfo->pszItemsDesc[tmpselect]);
         }
     }
 }
@@ -60,6 +60,7 @@ void Hmi_CameraLoad(void)
     CLEAR();
     MOVETO(0, 0);
     printf("---加载-----\n");
+    sleep(1);
 }
 
 void Hmi_CameraExit(void)
@@ -74,39 +75,39 @@ void Hmi_CameraExit(void)
 #endif
 }
 
-void Hmi_CameraTask(void)
+void Hmi_CameraTask(void* pExtendInputData)
 {
-    int cmd;
-
-    printf("选择操作(0-返回; 1-返回主菜单; 2-进入; 3-下一个; 4-上一个): ");
-    scanf(" %d", &cmd); // 空格作用是忽略上次的回车
- 
-    switch (cmd)
-    {
-    case 0:
-        cotMenu_Exit(true);
-        break;
-    case 1:
-        cotMenu_Reset();
-        break;
-    case 2:
-        cotMenu_Enter();
-        break;
-    case 3:
-        cotMenu_SelectNext(true);
-        break;
-    case 4:
-        cotMenu_SelectPrevious(true);
-        break;
-
-    default:
-        break;    
-    }
+//    int cmd;
+//
+//    printf("选择操作(0-返回; 1-返回主菜单; 2-进入; 3-下一个; 4-上一个): ");
+//    scanf(" %d", &cmd); // 空格作用是忽略上次的回车
+// 
+//    switch (cmd)
+//    {
+//    case 0:
+//        cotMenu_Exit(true);
+//        break;
+//    case 1:
+//        cotMenu_Reset();
+//        break;
+//    case 2:
+//        cotMenu_Enter();
+//        break;
+//    case 3:
+//        cotMenu_SelectNext(true);
+//        break;
+//    case 4:
+//        cotMenu_SelectPrevious(true);
+//        break;
+//
+//    default:
+//        break;    
+//    }
 }
 
 
 
-static void OnPhotoFunctionTask(void)
+static void OnPhotoFunctionTask(void* pExtendInputData)
 {
     int cmd = 0;
 
@@ -123,7 +124,7 @@ static void OnPhotoFunctionTask(void)
     }
 }
 
-static void OnCameraFunctionTask(void)
+static void OnCameraFunctionTask(void* pExtendInputData)
 {
     int cmd = 0;
 

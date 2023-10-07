@@ -1,5 +1,5 @@
 #include "hmi_music.h"
-#include "xmcore_menu_form.h"
+#include "mainhmi.h"
 #include <stdio.h>
 #include <string.h>
 #ifdef _WIN32
@@ -27,7 +27,7 @@ void Hmi_MusicLoad(void)
     sg_isInit = true;
 }
 
-void Hmi_MusicTask(void)
+void Hmi_MusicTask(void* pExtendInputData)
 {
     int cmd = 0;
 
@@ -44,11 +44,11 @@ void Hmi_MusicTask(void)
 #endif
     }
 
-    printf("选择操作(0-退出): ");
-    scanf(" %d", &cmd); // 空格作用是忽略上次的回车
-
-    if (cmd == 0)
-    {
-        cotMenu_Exit(false);
-    }
+//    printf("选择操作(0-退出): ");
+//    scanf(" %d", &cmd); // 空格作用是忽略上次的回车
+//
+//    if (cmd == 0)
+//    {
+//        cotMenu_Exit(false);
+//    }
 }

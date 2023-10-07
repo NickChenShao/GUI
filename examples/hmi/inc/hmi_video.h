@@ -7,6 +7,6 @@ extern const MenuImage_t sgc_VideoImage;
 
 void Hmi_VideoLoad(void);
 void Hmi_VideoExit(void);
-void Hmi_VideoTask(void);
+void Hmi_VideoTask(void* pExtendInputData);
 
 #endif

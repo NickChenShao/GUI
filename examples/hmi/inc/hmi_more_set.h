@@ -7,6 +7,6 @@
 void Hmi_MoreSetEnter(void);
 void Hmi_MoreSetExit(void);
 void Hmi_MoreSetLoad(void);
-void Hmi_MoreSetTask(void);
+void Hmi_MoreSetTask(void* pExtendInputData);
 
 #endif
