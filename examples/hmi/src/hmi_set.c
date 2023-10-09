@@ -10,10 +10,10 @@ const MenuImage_t sgc_SettingImage = {
 "%"
 };
 
-static void OnLanguageFunction(void* pExtendInputData);
-static void OnBluetoothFunction(void* pExtendInputData);
-static void OnBatteryFunction(void* pExtendInputData);
-static void OnStorageFunction(void* pExtendInputData);
+static void OnLanguageFunction(void* pExtendInputData,uint8_t, MenuShow_s* pstShowInfo);
+static void OnBluetoothFunction(void* pExtendInputData,uint8_t, MenuShow_s* pstShowInfo);
+static void OnBatteryFunction(void* pExtendInputData,uint8_t, MenuShow_s* pstShowInfo);
+static void OnStorageFunction(void* pExtendInputData,uint8_t, MenuShow_s* pstShowInfo);
 
 /* 设置菜单 */
 MenuList_s sg_SetMenuTable[] = 
@@ -26,7 +26,7 @@ MenuList_s sg_SetMenuTable[] =
 };
 
 /* 设置菜单显示效果 */
-static void ShowSetMenu(MenuShow_s *pstShowInfo)
+static void ShowSetMenu(MenuShow_s *pstShowInfo, uint8_t menuState)
 {
     uint8_t showNum = 3;
     MenuSize  tmpselect;
@@ -52,10 +52,10 @@ static void ShowSetMenu(MenuShow_s *pstShowInfo)
 
 void Hmi_SetEnter(void)
 {
-    cotMenu_Bind(sg_SetMenuTable, GET_MENU_NUM(sg_SetMenuTable), ShowSetMenu);
+    cotMenu_Bind(NULL,sg_SetMenuTable, GET_MENU_NUM(sg_SetMenuTable), ShowSetMenu);
 }
 
-void Hmi_SetLoad(void)
+void Hmi_SetLoad(uint8_t menuState)
 {
     
 }
@@ -65,7 +65,7 @@ void Hmi_SetExit(void)
 
 }
 
-void Hmi_SetTask(void* pExtendInputData)
+void Hmi_SetTask(void* pExtendInputData, uint8_t menuState, MenuShow_s* pstShowInfo)
 {
     int cmd;
 
@@ -96,7 +96,7 @@ void Hmi_SetTask(void* pExtendInputData)
 }
 
 
-static void OnLanguageFunction(void* pExtendInputData)
+static void OnLanguageFunction(void* pExtendInputData, uint8_t menuState, MenuShow_s* pstShowInfo)
 {
     int cmd;
 
@@ -119,7 +119,7 @@ static void OnLanguageFunction(void* pExtendInputData)
     cotMenu_Exit(0); // 切换后自动退出
 }
 
-static void OnBluetoothFunction(void* pExtendInputData)
+static void OnBluetoothFunction(void* pExtendInputData, uint8_t menuState, MenuShow_s* pstShowInfo)
 {
     int cmd;
 
@@ -136,7 +136,7 @@ static void OnBluetoothFunction(void* pExtendInputData)
     }
 }
 
-static void OnBatteryFunction(void* pExtendInputData)
+static void OnBatteryFunction(void* pExtendInputData, uint8_t menuState, MenuShow_s* pstShowInfo)
 {
     int cmd;
 
@@ -153,7 +153,7 @@ static void OnBatteryFunction(void* pExtendInputData)
     }
 }
 
-static void OnStorageFunction(void* pExtendInputData)
+static void OnStorageFunction(void* pExtendInputData, uint8_t menuState, MenuShow_s* pstShowInfo)
 {
     int cmd;
 

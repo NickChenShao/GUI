@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     int cmd = 0;
     int8_t musicMenuId, languageMenuId, moreSetMenuId;
     
-    MainMenuCfg_s tMainMenu = {{"主菜单", "Main Menu"}, EnterMainMenu, ExitMainMenu, Hmi_LoadMainHmi, Hmi_MainTask};
+    MainMenuCfg_s tMainMenu = {{"智能锁", "smart lock"}, EnterMainMenu, ExitMainMenu, Hmi_LoadMainHmi, Hmi_MainTask};
 
     cotMenu_Init(&tMainMenu);
     system("stty -icanon");//关闭缓冲区，输入字符无需按回车键直接接受
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
         CLEAR();
         MOVETO(0, 0);
 
-        if (!isEnterMenu)
+        if(!isEnterMenu)
         {
                 cotMenu_MainEnter();
                 CLEAR();
@@ -85,9 +85,9 @@ int cotMenu_DeInit(void)
 	LibXmCore_MenuForm_deInit(&sg_stMenuManage);
 }
 
-int cotMenu_Bind(MenuList_s *pstMenuList, MenuSize menuNum, ShowmenuAnyCallFuncPtr fnShowMenuFuncPtrcPtr)
+int cotMenu_Bind(const void* pTileExData, MenuList_s *pstMenuList, MenuSize menuNum, ShowmenuAnyCallFuncPtr fnShowMenuFuncPtrcPtr)
 {
-	LibXmCore_MenuForm_bindMenuList(&sg_stMenuManage, pstMenuList,menuNum,fnShowMenuFuncPtrcPtr);
+	LibXmCore_MenuForm_bindMenuList(&sg_stMenuManage, pTileExData, pstMenuList,menuNum,fnShowMenuFuncPtrcPtr);
 }
 
 /* 菜单功能设置 */
@@ -154,24 +154,20 @@ int cotMenu_Task(void)
 	LibXmCore_MenuForm_processTask(&sg_stMenuManage);
 }
 
-void cotMenu_setTick(uint16_t timeTick)
+void cotMenu_setTick(uint16_t timeTick,uint8_t isIgnoreFirstTick)
 {
-	LibXmCore_MenuForm_setTick(&sg_stMenuManage, timeTick);
+	LibXmCore_MenuForm_setTick(&sg_stMenuManage, MENU_TICK_TYPE_ONSHOW, timeTick, isIgnoreFirstTick);
 }
 void cotMenu_refreshMenu(void)
 {
 	LibXmCore_MenuForm_refreshMenu(&sg_stMenuManage);
-}
-void cotMenu_setRefreshFreqDiv(uint16_t refreshFreqDiv)
-{
-	LibXmCore_MenuForm_setRefreshFreqDiv(&sg_stMenuManage,refreshFreqDiv);
 }
 
 
 
 uint16_t cotMenu_getTick()
 {
-	return LibXmCore_MenuForm_getTick(&sg_stMenuManage);
+	return LibXmCore_MenuForm_getTick(&sg_stMenuManage,MENU_TICK_TYPE_ONSHOW);
 }
 
 void XmMcu_cotMenu_getInput(void* pExtendInputData)

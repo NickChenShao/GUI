@@ -4,14 +4,16 @@
 #include "hmi_common.h"
 #include "xmcore_menu_form.h"
 #include <unistd.h>
-void Hmi_LoadMainHmi(void);
-void Hmi_MainTask(void* pExtendInputData);
+void Hmi_LoadMainHmi(uint8_t menuState);
+void Hmi_MainTask(void* pExtendInputData,uint8_t menuState, MenuShow_s* pstShowInfo);
 
 
+
+//菜单界面相关对接应用层的GUI
 extern int cotMenu_Init(MainMenuCfg_s *pMainMenu);
 extern int cotMenu_DeInit(void);
 
-extern int cotMenu_Bind(MenuList_s *pMenuList, MenuSize menuNum, ShowmenuAnyCallFuncPtr fnShowMenuFuncPtr);
+extern int cotMenu_Bind(const void* pTileExData, MenuList_s *pstMenuList, MenuSize menuNum, ShowmenuAnyCallFuncPtr fnShowMenuFuncPtrcPtr);
 
 /* 菜单功能设置 */
 
@@ -39,13 +41,13 @@ extern int cotMenu_ShortcutEnter(bool isAbsolute, uint8_t deep, ...);
 
 extern int cotMenu_Task(void);
 
-extern void cotMenu_setTick(uint16_t timeTick);
+extern void cotMenu_setTick(uint16_t timeTick,  uint8_t isIgnoreFirstTick);
 
 extern uint16_t cotMenu_getTick(void);
 
 extern void cotMenu_refreshMenu(void);
 
-extern void cotMenu_setRefreshFreqDiv(uint16_t refreshFreqDiv);
+
 
 uint8_t XmMcu_Ctrl_MenuTask(uint8_t* pContent, uint8_t level, void* pExtendInputData);
 void XmMcu_cotMenu_getInput(void* pExtendInputData);

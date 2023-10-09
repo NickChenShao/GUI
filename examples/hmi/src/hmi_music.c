@@ -22,12 +22,12 @@ void Hmi_MusicExit(void)
 
 }
 
-void Hmi_MusicLoad(void)
+void Hmi_MusicLoad(uint8_t menuState)
 {
     sg_isInit = true;
 }
 
-void Hmi_MusicTask(void* pExtendInputData)
+void Hmi_MusicTask(void* pExtendInputData, uint8_t menuState, MenuShow_s* pstShowInfo)
 {
     int cmd = 0;
 
