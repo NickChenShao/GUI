@@ -15,8 +15,8 @@ const MenuImage_t sgc_CameraImage = {
 };
 
 
-static void OnPhotoFunctionTask(void* pExtendInputData);
-static void OnCameraFunctionTask(void* pExtendInputData);
+static void OnPhotoFunctionTask(void* pExtendInputData,uint8_t, MenuShow_s* pstShowInfo);
+static void OnCameraFunctionTask(void* pExtendInputData,uint8_t ,MenuShow_s* pstShowInfo);
 
 /* 摄像机菜单 */
 MenuList_s sg_CameraMenuTable[] = 
@@ -26,7 +26,7 @@ MenuList_s sg_CameraMenuTable[] =
 };
 
 /* 摄像机菜单显示效果 */
-static void ShowCameraMenu(MenuShow_s *pstShowInfo)
+static void ShowCameraMenu(MenuShow_s *pstShowInfo, uint8_t menuState)
 {
     uint8_t showNum = 3;
     MenuSize  tmpselect;
@@ -52,10 +52,10 @@ static void ShowCameraMenu(MenuShow_s *pstShowInfo)
 
 void Hmi_CameraEnter(void)
 {
-    cotMenu_Bind(sg_CameraMenuTable, GET_MENU_NUM(sg_CameraMenuTable), ShowCameraMenu);
+    cotMenu_Bind(NULL,sg_CameraMenuTable, GET_MENU_NUM(sg_CameraMenuTable), ShowCameraMenu);
 }
 
-void Hmi_CameraLoad(void)
+void Hmi_CameraLoad(uint8_t menuState)
 {
     CLEAR();
     MOVETO(0, 0);
@@ -75,7 +75,7 @@ void Hmi_CameraExit(void)
 #endif
 }
 
-void Hmi_CameraTask(void* pExtendInputData)
+void Hmi_CameraTask(void* pExtendInputData, uint8_t menuState, MenuShow_s* pstShowInfo)
 {
 //    int cmd;
 //
@@ -107,7 +107,7 @@ void Hmi_CameraTask(void* pExtendInputData)
 
 
 
-static void OnPhotoFunctionTask(void* pExtendInputData)
+static void OnPhotoFunctionTask(void* pExtendInputData,uint8_t menuState ,MenuShow_s* pstShowInfo)
 {
     int cmd = 0;
 
@@ -124,7 +124,7 @@ static void OnPhotoFunctionTask(void* pExtendInputData)
     }
 }
 
-static void OnCameraFunctionTask(void* pExtendInputData)
+static void OnCameraFunctionTask(void* pExtendInputData, uint8_t menuState,MenuShow_s* pstShowInfo)
 {
     int cmd = 0;
 

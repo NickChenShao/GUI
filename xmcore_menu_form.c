@@ -167,18 +167,20 @@ int LibXmCore_MenuForm_deInit(MenuManage_s* pstMenuManage)
   * @param      fnShowMenuFuncPtr  新的菜单列表显示效果回调函数, 为NULL则延续上级菜单显示效果
   * @return     int
   */
-int LibXmCore_MenuForm_bindMenuList(MenuManage_s* pstMenuManage,MenuList_s* pstMenuList, MenuSize menuNum, ShowmenuAnyCallFuncPtr fnShowMenuFuncPtr)
+int LibXmCore_MenuForm_bindMenuList(MenuManage_s* pstMenuManage,const void* pTileExData, MenuList_s* pstMenuList, MenuSize menuNum, ShowmenuAnyCallFuncPtr fnShowMenuFuncPtr)
 {
 	if(pstMenuManage->pstNowMenuCtrl == NULL)
 	{
 		return -1;
 	}
-
+	
 	if(pstMenuManage->pstNowMenuCtrl->pstMenuList != NULL)
 	{
 		return 0;
 	}
-
+	
+	pstMenuManage->pstNowMenuCtrl->pTileExData = pTileExData;
+	
 	pstMenuManage->pstNowMenuCtrl->pstMenuList = pstMenuList;
 	pstMenuManage->pstNowMenuCtrl->itemsNum = menuNum;
 
@@ -294,7 +296,7 @@ int LibXmCore_MenuForm_enter(MenuManage_s* pstMenuManage)
 	MenuCtrl_s* pstNewMenuCtrl = NULL;
 	MenuCtrl_s* pCurrMenuCtrl = pstMenuManage->pstNowMenuCtrl;
 
-	if(pstMenuManage->pstNowMenuCtrl == NULL || pstMenuManage->isEnterMainMenu == 0)
+	if(pstMenuManage->pstNowMenuCtrl == NULL || pstMenuManage->isEnterMainMenu == 0 || pstMenuManage->pstNowMenuCtrl->itemsNum == 0)
 	{
 		return -1;
 	}
@@ -309,6 +311,8 @@ int LibXmCore_MenuForm_enter(MenuManage_s* pstMenuManage)
 		pstNewMenuCtrl->apszDesc[i] = (char*)pCurrMenuCtrl->pstMenuList[pCurrMenuCtrl->selectItem].apszDesc[i];
 	}
 
+	pstMenuManage->menuState = 0;
+	
 	pstNewMenuCtrl->pstMenuList = NULL;
 	pstNewMenuCtrl->itemsNum = 0;
 	pstNewMenuCtrl->fnShowMenuFuncPtr = pCurrMenuCtrl->fnShowMenuFuncPtr;		//临时使用上一层界面的显示回调
@@ -325,7 +329,6 @@ int LibXmCore_MenuForm_enter(MenuManage_s* pstMenuManage)
 	{
 		pCurrMenuCtrl->pstMenuList[pCurrMenuCtrl->selectItem].fnEnterCallFuncPtr();
 	}
-
 	return 0;
 }
 
@@ -350,6 +353,8 @@ int LibXmCore_MenuForm_exit(MenuManage_s* pstMenuManage, bool isReset)
 		printf("error 1\r\n");
 		return -1;
 	}
+
+	pstMenuManage->menuState = 0;
 
 	pstMenuManage->pstNowMenuCtrl = pstMenuManage->pstNowMenuCtrl->pstParentMenuCtrl;
 	pstMenuManage->fnLoadCallFuncPtr = pstMenuManage->pstNowMenuCtrl->fnLoadCallFuncPtr;
@@ -602,7 +607,7 @@ int LibXmCore_MenuForm_processTask(MenuManage_s* pstMenuManage)
 {
 	int i;
 	MenuList_s* pstMenuList;
-	MenuShow_s tMenuShow;
+	MenuShow_s tMenuShow;		//消耗的100多字节的栈
 	uint8_t aContentAddr[pstMenuManage->menuCtrlMaxDepth];
 	uint8_t level = pstMenuManage->menuCtrlMaxDepth;
 	if(pstMenuManage->pstNowMenuCtrl == NULL || pstMenuManage->isEnterMainMenu == 0)
@@ -612,11 +617,13 @@ int LibXmCore_MenuForm_processTask(MenuManage_s* pstMenuManage)
 
 	if(pstMenuManage->fnLoadCallFuncPtr != NULL)
 	{
-		pstMenuManage->fnLoadCallFuncPtr();
+		pstMenuManage->fnLoadCallFuncPtr(pstMenuManage->menuState);
 		pstMenuManage->fnLoadCallFuncPtr = NULL;
 	}
-	if((pstMenuManage->onShowTimeTick == 0) || (pstMenuManage->needFastRefresh))
+
+	if((0 == pstMenuManage->aTimeTick[MENU_TICK_TYPE_ONSHOW]) || pstMenuManage->needFastRefresh)
 	{
+		pstMenuManage->needFastRefresh = 0;
 		if(pstMenuManage->pstNowMenuCtrl->pstMenuList != NULL)
 		{
 			pstMenuList = pstMenuManage->pstNowMenuCtrl->pstMenuList;
@@ -634,20 +641,11 @@ int LibXmCore_MenuForm_processTask(MenuManage_s* pstMenuManage)
 		
 			if(pstMenuManage->pstNowMenuCtrl->fnShowMenuFuncPtr != NULL)
 			{
-				pstMenuManage->pstNowMenuCtrl->fnShowMenuFuncPtr(&tMenuShow);
+				pstMenuManage->pstNowMenuCtrl->fnShowMenuFuncPtr(&tMenuShow, pstMenuManage->menuState);
 			}
 		
-			pstMenuManage->pstNowMenuCtrl->showBaseItem = tMenuShow.showBaseItem;
+			pstMenuManage->pstNowMenuCtrl->showBaseItem = tMenuShow.showBaseItem;	//同步showBaseItem
 		}
-		pstMenuManage->needFastRefresh = 0;
-		if(pstMenuManage->onShowConfTimeTick)
-		{
-			pstMenuManage->onShowTimeTick = pstMenuManage->onShowConfTimeTick - 1;
-		}
-	}
-	else
-	{
-			pstMenuManage->onShowTimeTick--;
 	}
 
 	if(pstMenuManage->pExtendInputData && pstMenuManage->menuGetInputDataCallFuncPtr)
@@ -655,54 +653,64 @@ int LibXmCore_MenuForm_processTask(MenuManage_s* pstMenuManage)
 		pstMenuManage->menuGetInputDataCallFuncPtr(pstMenuManage->pExtendInputData);
 	}
 
+
 	if(pstMenuManage->menuAnyCallFuncPtr)
 	{
 		LibXmCore_MenuForm_getMenuAddr(pstMenuManage,aContentAddr,&level);
 		// FIXME:考虑添加断言ELOG_A(level == pstMenuManage->menuCtrlMaxDepth)
 		pstMenuManage->menuAnyCallFuncPtr(aContentAddr,level, pstMenuManage->pExtendInputData);
 	}
-#if 0	//刷新tick后延迟触发
-	if(pstMenuManage->timeTick)
-	{
-		pstMenuManage->timeTick--;
-	}
-	else
-	{
-		if(pstMenuManage->confTimeTick)
-		{
-			pstMenuManage->timeTick = pstMenuManage->confTimeTick - 1;
-		}
-	}
-#else		//刷新tick后直接触发
-	pstMenuManage->timeTick++;
-	if(pstMenuManage->timeTick < pstMenuManage->confTimeTick)
-	{
-		
-	}
-	else
-	{
-		pstMenuManage->timeTick = 0;
-	}
-#endif		
+
 	if(pstMenuManage->pstNowMenuCtrl->fnRunCallFuncPtr != NULL)
 	{
-		pstMenuManage->pstNowMenuCtrl->fnRunCallFuncPtr(pstMenuManage->pExtendInputData);
+		pstMenuManage->pstNowMenuCtrl->fnRunCallFuncPtr(pstMenuManage->pExtendInputData, pstMenuManage->menuState, &tMenuShow);
+	}
+
+	//刷新tick
+	for(i=0;i < MENU_TICK_TYPE_MAX;i++)
+	{
+		if(pstMenuManage->aConfTimeTick[i])
+		{
+			if(pstMenuManage->aTimeTick[i])
+			{
+				pstMenuManage->aTimeTick[i]--;
+			}
+			else
+			{
+				pstMenuManage->aTimeTick[i] = pstMenuManage->aConfTimeTick[i] - 1;
+			}
+		}
+
 	}
 
 	return 0;
 }
-uint16_t LibXmCore_MenuForm_getTick(MenuManage_s* pstMenuManage)
+void LibXmCore_MenuForm_setMenuState(MenuManage_s* pstMenuManage, uint8_t menuState, uint16_t aTimeTick,uint8_t isIgnoreFirstTick)
 {
-	return pstMenuManage->timeTick;
+	pstMenuManage->menuState = menuState;
+	pstMenuManage->fnLoadCallFuncPtr = pstMenuManage->pstNowMenuCtrl->fnLoadCallFuncPtr;		//重新装载
+	LibXmCore_MenuForm_setTick(pstMenuManage,MENU_TICK_TYPE_ONTICK, aTimeTick, isIgnoreFirstTick);
 }
-void LibXmCore_MenuForm_setTick(MenuManage_s* pstMenuManage, uint16_t timeTick)
+uint16_t LibXmCore_MenuForm_getTick(MenuManage_s* pstMenuManage, MenuSetTickType_e eMenuSetTickType)
 {
-	pstMenuManage->confTimeTick = timeTick;
-	pstMenuManage->timeTick = pstMenuManage->confTimeTick;
+	return pstMenuManage->aTimeTick[eMenuSetTickType];
 }
-void LibXmCore_MenuForm_setRefreshFreqDiv(MenuManage_s* pstMenuManage, uint16_t refreshFreqDiv)
+void LibXmCore_MenuForm_setTick(MenuManage_s* pstMenuManage,MenuSetTickType_e eMenuSetTickType, uint16_t aTimeTick,uint8_t isIgnoreFirstTick)
 {
-	pstMenuManage->onShowConfTimeTick = refreshFreqDiv;
+	pstMenuManage->aConfTimeTick[eMenuSetTickType] = aTimeTick;
+	if(0 == aTimeTick)
+	{
+		pstMenuManage->aTimeTick[eMenuSetTickType] = 0xffff;
+	}
+	else if(isIgnoreFirstTick)
+	{
+		pstMenuManage->aTimeTick[eMenuSetTickType] = aTimeTick;	
+	}
+	else
+	{
+		pstMenuManage->aTimeTick[eMenuSetTickType] = 0;
+	}
+	pstMenuManage->aTimeTick[eMenuSetTickType]++;
 }
 void LibXmCore_MenuForm_refreshMenu(MenuManage_s* pstMenuManage)
 {

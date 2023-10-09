@@ -24,7 +24,7 @@ MenuList_s sg_MainMenuTable[] =
 
 
 /* 主菜单显示效果 */
-static void ShowMainMenu(MenuShow_s *pstShowInfo)
+static void ShowMainMenu(MenuShow_s *pstShowInfo,uint8_t menuState)
 {
     uint8_t showNum = 3;
     MenuImage_t *pMenuImage;
@@ -86,12 +86,12 @@ static void ShowMainMenu(MenuShow_s *pstShowInfo)
     printf("\n");
 }
 
-void Hmi_LoadMainHmi(void)
+void Hmi_LoadMainHmi(uint8_t menuState)
 {
-    cotMenu_Bind(sg_MainMenuTable, GET_MENU_NUM(sg_MainMenuTable), ShowMainMenu);
+    cotMenu_Bind(NULL,sg_MainMenuTable, GET_MENU_NUM(sg_MainMenuTable), ShowMainMenu);
 }
 
-void Hmi_MainTask(void* pExtendInputData)
+void Hmi_MainTask(void* pExtendInputData,uint8_t menuState, MenuShow_s* pstShowInfo)
 {
     int cmd;
 

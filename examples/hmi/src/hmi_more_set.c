@@ -4,8 +4,8 @@
 #include <string.h>
 
 
-static void OnUpgradeFunction(void* pExtendInputData);
-static void OnAboutMenuFunction(void* pExtendInputData);
+static void OnUpgradeFunction(void* pExtendInputData,uint8_t, MenuShow_s* pstShowInfo);
+static void OnAboutMenuFunction(void* pExtendInputData,uint8_t, MenuShow_s* pstShowInfo);
 
 
 /* 更多设置 */
@@ -16,7 +16,7 @@ MenuList_s sg_MoreSetMenuTable[] =
 };
 
 /* 更多设置菜单显示效果: 右侧弹出菜单效果 */
-static void ShowMoreSetMenu(MenuShow_s *pstShowInfo)
+static void ShowMoreSetMenu(MenuShow_s *pstShowInfo,uint8_t menuState)
 {
     uint8_t showNum = 3;
     uint8_t showsubNum = 3;
@@ -67,10 +67,10 @@ static void ShowMoreSetMenu(MenuShow_s *pstShowInfo)
 
 void Hmi_MoreSetEnter(void)
 {
-    cotMenu_Bind(sg_MoreSetMenuTable, GET_MENU_NUM(sg_MoreSetMenuTable), ShowMoreSetMenu);
+    cotMenu_Bind(NULL,sg_MoreSetMenuTable, GET_MENU_NUM(sg_MoreSetMenuTable), ShowMoreSetMenu);
 }
 
-void Hmi_MoreSetLoad(void)
+void Hmi_MoreSetLoad(uint8_t menuState)
 {
 
 }
@@ -80,7 +80,7 @@ void Hmi_MoreSetExit(void)
 
 }
 
-void Hmi_MoreSetTask(void* pExtendInputData)
+void Hmi_MoreSetTask(void* pExtendInputData, uint8_t menuState, MenuShow_s* pstShowInfo)
 {
     int cmd;
 
@@ -111,7 +111,7 @@ void Hmi_MoreSetTask(void* pExtendInputData)
 }
 
 
-static void OnUpgradeFunction(void* pExtendInputData)
+static void OnUpgradeFunction(void* pExtendInputData, uint8_t menuState, MenuShow_s* pstShowInfo)
 {
     int cmd;
 
@@ -128,7 +128,7 @@ static void OnUpgradeFunction(void* pExtendInputData)
     }
 }
 
-static void OnAboutMenuFunction(void* pExtendInputData)
+static void OnAboutMenuFunction(void* pExtendInputData, uint8_t menuState, MenuShow_s* pstShowInfo)
 {
     int cmd;
 

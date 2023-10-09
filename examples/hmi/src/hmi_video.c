@@ -12,7 +12,7 @@ const MenuImage_t sgc_VideoImage = {
 
 
 
-void Hmi_VideoLoad(void)
+void Hmi_VideoLoad(uint8_t menuState)
 {
     
 }
@@ -22,7 +22,7 @@ void Hmi_VideoExit(void)
 
 }
 
-void Hmi_VideoTask(void* pExtendInputData)
+void Hmi_VideoTask(void* pExtendInputData, uint8_t menuState, MenuShow_s* pstShowInfo)
 {
     int cmd;
 

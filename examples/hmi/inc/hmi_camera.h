@@ -7,6 +7,6 @@ extern const MenuImage_t sgc_CameraImage;
 
 void Hmi_CameraEnter(void);
 void Hmi_CameraExit(void);
-void Hmi_CameraLoad(void);
-void Hmi_CameraTask(void* pExtendInputData);
+void Hmi_CameraLoad(uint8_t menuState);
+void Hmi_CameraTask(void* pExtendInputData, uint8_t menuState, MenuShow_s* pstShowInfo);
 #endif

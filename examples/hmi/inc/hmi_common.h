@@ -1,6 +1,9 @@
 #ifndef HMI_COMMON_H
 #define HMI_COMMON_H
 
+#include <stdio.h>
+#include <stdint.h>
+#include "xmcore_menu_form.h"
 
 /* 自定义图标数据 */
 typedef struct
