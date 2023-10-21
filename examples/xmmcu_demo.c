@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     int cmd = 0;
     int8_t musicMenuId, languageMenuId, moreSetMenuId;
     
-    MainMenuCfg_s tMainMenu = {{"智能锁", "smart lock"}, EnterMainMenu, ExitMainMenu, Hmi_LoadMainHmi, Hmi_MainTask};
+    MainMenuCfg_s tMainMenu = {{"智能锁", "smart lock"}, XmMcu_FrmStart_enter, XmMcu_FrmStart_exit, XmMcu_FrmStart_load, XmMcu_FrmStart_task};
 
     cotMenu_Init(&tMainMenu);
     system("stty -icanon");//关闭缓冲区，输入字符无需按回车键直接接受
@@ -85,9 +85,9 @@ int cotMenu_DeInit(void)
 	LibXmCore_MenuForm_deInit(&sg_stMenuManage);
 }
 
-int cotMenu_Bind(const void* pTileExData, MenuList_s *pstMenuList, MenuSize menuNum, ShowmenuAnyCallFuncPtr fnShowMenuFuncPtrcPtr)
+int cotMenu_Bind(MenuList_s *pstMenuList, MenuSize menuNum, ShowmenuAnyCallFuncPtr fnShowMenuFuncPtrcPtr, const void* pTileExData)
 {
-	LibXmCore_MenuForm_bindMenuList(&sg_stMenuManage, pTileExData, pstMenuList,menuNum,fnShowMenuFuncPtrcPtr);
+	LibXmCore_MenuForm_bindMenuList(&sg_stMenuManage, pstMenuList,menuNum,fnShowMenuFuncPtrcPtr, pTileExData);
 }
 
 /* 菜单功能设置 */
@@ -158,16 +158,31 @@ void cotMenu_setTick(uint16_t timeTick,uint8_t isIgnoreFirstTick)
 {
 	LibXmCore_MenuForm_setTick(&sg_stMenuManage, MENU_TICK_TYPE_ONSHOW, timeTick, isIgnoreFirstTick);
 }
+void cotMenu_setTickAtLoad(MenuSetTickType_e eMenuSetTickType, uint16_t timeTick,uint8_t isIgnoreFirstTick)
+{
+	LibXmCore_MenuForm_setTickAtLoad(&sg_stMenuManage, eMenuSetTickType, timeTick, isIgnoreFirstTick);
+}
+
 void cotMenu_refreshMenu(void)
 {
 	LibXmCore_MenuForm_refreshMenu(&sg_stMenuManage);
+}
+void cotMenu_setMenuState(uint8_t menuState, uint16_t aTimeTick,uint8_t isIgnoreFirstTick)
+{
+	LibXmCore_MenuForm_setMenuState(&sg_stMenuManage, menuState, aTimeTic, isIgnoreFirstTick);
+	LibXmCore_MenuForm_refreshMenu(&sg_stMenuManage);
+}
+
+void cotMenu_changeMenuState(uint8_t menuState)
+{
+	LibXmCore_MenuForm_changeMenuState(&sg_stMenuManage, menuState);
 }
 
 
 
 uint16_t cotMenu_getTick()
 {
-	return LibXmCore_MenuForm_getTick(&sg_stMenuManage,MENU_TICK_TYPE_ONSHOW);
+	return LibXmCore_MenuForm_getTick(&sg_stMenuManage,MENU_TICK_TYPE_ONTICK);
 }
 
 void XmMcu_cotMenu_getInput(void* pExtendInputData)

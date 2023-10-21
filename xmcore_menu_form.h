@@ -82,7 +82,10 @@ typedef struct MenuShow
 	MenuSize showBaseItem;            /*!< 当前菜单首个显示的选项 */
 
 	char*    apszDesc;                  /*!< 当前菜单的字符串描述 */
-
+	
+	const void*	pTileExData;
+	
+	uint8_t		language;
 	char*    pszItemsDesc[MENU_MAX_NUM];   /*!< 当前菜单中所有选项的字符串描述 */
 
 	void*    pItemsExData[MENU_MAX_NUM];   /*!< 当前菜单中所有选项注册时的扩展数据 */
@@ -175,6 +178,7 @@ typedef struct
 	uint16_t			aTimeTick[MENU_TICK_TYPE_MAX];
 	uint16_t			aConfTimeTick[MENU_TICK_TYPE_MAX];
 	uint8_t				menuState;			//用于一个界面中多个动画的切换使用，enter或exit界面后state会默认清零
+	uint8_t				lastMenuState;
 } MenuManage_s;
 
 /* Exported constants ------------------------------------------------------------------------------------------------*/
@@ -189,7 +193,7 @@ typedef struct
 int LibXmCore_MenuForm_init(MenuManage_s* pstMenuManage, MainMenuCfg_s* pstMainMenu,	MenuCtrl_s*	pArrMenuCtrlBuf, MenuSize menuCtrlMaxDepth,MenuAnyCallFuncPtr menuAnyCallFuncPtr, 	MenuGetInputDataCallFuncPtr	fnGetInputDataCallFuncPtr, void* pExtendData);
 int LibXmCore_MenuForm_deInit(MenuManage_s* pstMenuManage);
 
-int LibXmCore_MenuForm_bindMenuList(MenuManage_s* pstMenuManage,const void* pTileExData,MenuList_s* pstMenuList, MenuSize menuNum, ShowmenuAnyCallFuncPtr fnShowMenuFuncPtr);
+int LibXmCore_MenuForm_bindMenuList(MenuManage_s* pstMenuManage,MenuList_s* pstMenuList, MenuSize menuNum, ShowmenuAnyCallFuncPtr fnShowMenuFuncPtr,const void* pTileExData);
 
 /* 菜单功能设置 */
 
@@ -224,6 +228,7 @@ int LibXmCore_MenuForm_processTask(MenuManage_s* pstMenuManage);
 void LibXmCore_MenuForm_setMenuState(MenuManage_s* pstMenuManage, uint8_t menuState, uint16_t aTimeTick,uint8_t isIgnoreFirstTick);
 uint16_t LibXmCore_MenuForm_getTick(MenuManage_s* pstMenuManage,MenuSetTickType_e eMenuSetTickType);
 void LibXmCore_MenuForm_setTick(MenuManage_s* pstMenuManage,MenuSetTickType_e eMenuSetTickType, uint16_t aTimeTick,uint8_t isIgnoreFirstTick);
+void LibXmCore_MenuForm_setTickAtLoad(MenuManage_s* pstMenuManage,MenuSetTickType_e eMenuSetTickType, uint16_t aTimeTick,uint8_t isIgnoreFirstTick);
 
 void LibXmCore_MenuForm_refreshMenu(MenuManage_s* pstMenuManage);
 

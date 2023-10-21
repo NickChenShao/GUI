@@ -12,12 +12,12 @@ const MenuImage_t sgc_MusicImage = {
 "@"
 };
 
-void Hmi_MusicEnter(void)
+void XmMcu_MainForm_enter(void)
 {
 
 }
 
-void Hmi_MusicExit(void)
+void XmMcu_MainForm_exit(void)
 {
 
 }

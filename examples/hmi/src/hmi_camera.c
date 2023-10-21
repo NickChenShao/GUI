@@ -52,7 +52,7 @@ static void ShowCameraMenu(MenuShow_s *pstShowInfo, uint8_t menuState)
 
 void Hmi_CameraEnter(void)
 {
-    cotMenu_Bind(NULL,sg_CameraMenuTable, GET_MENU_NUM(sg_CameraMenuTable), ShowCameraMenu);
+	cotMenu_Bind(sg_CameraMenuTable, GET_MENU_NUM(sg_CameraMenuTable), ShowCameraMenu,NULL);
 }
 
 void Hmi_CameraLoad(uint8_t menuState)

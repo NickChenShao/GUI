@@ -52,7 +52,7 @@ static void ShowSetMenu(MenuShow_s *pstShowInfo, uint8_t menuState)
 
 void Hmi_SetEnter(void)
 {
-    cotMenu_Bind(NULL,sg_SetMenuTable, GET_MENU_NUM(sg_SetMenuTable), ShowSetMenu);
+    cotMenu_Bind(sg_SetMenuTable, GET_MENU_NUM(sg_SetMenuTable), ShowSetMenu,NULL);
 }
 
 void Hmi_SetLoad(uint8_t menuState)

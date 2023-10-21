@@ -67,7 +67,7 @@ static void ShowMoreSetMenu(MenuShow_s *pstShowInfo,uint8_t menuState)
 
 void Hmi_MoreSetEnter(void)
 {
-    cotMenu_Bind(NULL,sg_MoreSetMenuTable, GET_MENU_NUM(sg_MoreSetMenuTable), ShowMoreSetMenu);
+    cotMenu_Bind(sg_MoreSetMenuTable, GET_MENU_NUM(sg_MoreSetMenuTable), ShowMoreSetMenu,NULL);
 }
 
 void Hmi_MoreSetLoad(uint8_t menuState)

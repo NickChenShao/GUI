@@ -5,7 +5,7 @@
 #include "xmcore_menu_form.h"
 #include <unistd.h>
 void Hmi_LoadMainHmi(uint8_t menuState);
-void Hmi_MainTask(void* pExtendInputData,uint8_t menuState, MenuShow_s* pstShowInfo);
+void XmMcu_MainForm_task(void* pExtendInputData,uint8_t menuState, MenuShow_s* pstShowInfo);
 
 
 
@@ -13,7 +13,7 @@ void Hmi_MainTask(void* pExtendInputData,uint8_t menuState, MenuShow_s* pstShowI
 extern int cotMenu_Init(MainMenuCfg_s *pMainMenu);
 extern int cotMenu_DeInit(void);
 
-extern int cotMenu_Bind(const void* pTileExData, MenuList_s *pstMenuList, MenuSize menuNum, ShowmenuAnyCallFuncPtr fnShowMenuFuncPtrcPtr);
+extern int cotMenu_Bind(MenuList_s *pstMenuList, MenuSize menuNum, ShowmenuAnyCallFuncPtr fnShowMenuFuncPtrcPtr, const void* pTileExData);
 
 /* 菜单功能设置 */
 
@@ -43,10 +43,15 @@ extern int cotMenu_Task(void);
 
 extern void cotMenu_setTick(uint16_t timeTick,  uint8_t isIgnoreFirstTick);
 
+extern void cotMenu_setTickAtLoad(MenuSetTickType_e eMenuSetTickType, uint16_t timeTick,uint8_t isIgnoreFirstTick);
+
 extern uint16_t cotMenu_getTick(void);
 
 extern void cotMenu_refreshMenu(void);
 
+extern void cotMenu_setMenuState(uint8_t menuState, uint16_t aTimeTick,uint8_t isIgnoreFirstTick);
+
+extern void cotMenu_changeMenuState(uint8_t menuState);
 
 
 uint8_t XmMcu_Ctrl_MenuTask(uint8_t* pContent, uint8_t level, void* pExtendInputData);

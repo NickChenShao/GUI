@@ -12,7 +12,7 @@
 /* 主菜单 */
 MenuList_s sg_MainMenuTable[] = 
 {
-    {{"  音乐  ", "  Music "},  Hmi_MusicEnter, Hmi_MusicExit, Hmi_MusicLoad, Hmi_MusicTask, (MenuImage_t *)&sgc_MusicImage},
+    {{"  音乐  ", "  Music "},  XmMcu_MainForm_enter, XmMcu_MainForm_exit, Hmi_MusicLoad, Hmi_MusicTask, (MenuImage_t *)&sgc_MusicImage},
     
     {{"  视频  ", "  Video "},  NULL, Hmi_VideoExit, Hmi_VideoLoad, Hmi_VideoTask, (MenuImage_t *)&sgc_VideoImage},
     
@@ -88,7 +88,7 @@ static void ShowMainMenu(MenuShow_s *pstShowInfo,uint8_t menuState)
 
 void Hmi_LoadMainHmi(uint8_t menuState)
 {
-    cotMenu_Bind(NULL,sg_MainMenuTable, GET_MENU_NUM(sg_MainMenuTable), ShowMainMenu);
+    cotMenu_Bind(sg_MainMenuTable, GET_MENU_NUM(sg_MainMenuTable), ShowMainMenu,NULL);
 }
 
 void Hmi_MainTask(void* pExtendInputData,uint8_t menuState, MenuShow_s* pstShowInfo)
